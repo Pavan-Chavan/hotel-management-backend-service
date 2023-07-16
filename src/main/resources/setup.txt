@@ -1,0 +1,9 @@
+##Steps to start the HotelManagementService Locally:-
+1) Clone the service
+2) Install any maven 3.x version
+3) set Env variable as M2_HOME and path upto /bin
+4) Import all dependencies
+5) Install oracle 11g DB locally
+6) change the application.properties file according to the db configurations
+7) Run the Service and check the swagger locally
+8) swagger URL : http://localhost:8083/swagger-ui/#/
