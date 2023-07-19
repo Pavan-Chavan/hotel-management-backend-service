@@ -2,9 +2,11 @@ package com.teams.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -12,6 +14,7 @@ import java.util.Properties;
 import static com.teams.constant.HoteManagementConstants.*;
 
 @Configuration
+@RequiredArgsConstructor
 public class DBConfiguration {
     @Value("${oracle.driver.class}")
     private String driverClass;
@@ -31,6 +34,5 @@ public class DBConfiguration {
         properties.setProperty(PASSWORD, password);
         HikariConfig hikariConfig = new HikariConfig(properties);
         return new HikariDataSource(hikariConfig);
-
     }
 }

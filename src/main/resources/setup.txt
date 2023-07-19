@@ -1,9 +1,25 @@
-##Steps to start the HotelManagementService Locally:-
+##Steps to start the HotelManagementService locally:-
 1) Clone the service
 2) Install any maven 3.x version
-3) set Env variable as M2_HOME and path upto /bin
+3) set env variable as M2_HOME and path upto /bin
 4) Import all dependencies
 5) Install oracle 11g DB locally
 6) change the application.properties file according to the db configurations
 7) Run the Service and check the swagger locally
 8) swagger URL : http://localhost:8083/swagger-ui/#/
+
+
+##Basic steps to add any api:-
+1) Always add the swagger annotations with appropriate operation details (refer https://swagger.io/docs/specification/describing-parameters/)
+2) Add the logs like info and error at appropriate position which helps while debugging. (use @Slf4j annotation at class level)
+3)
+
+
+##Setup to add vault locally:-
+1) download vault zip file from https://developer.hashicorp.com/vault/downloads and extract it
+2) use vault server -dev to start in dev mode
+3)store the vaults tokens
+ Unseal Key: ad4dZ7VTpcJV5CDJuudnhnn8JFnOL96mdLbTxP/NSSw=
+ Root Token: hvs.zcluzq9YRJI6W5ehaj2NbPmo
+
+4)

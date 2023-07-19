@@ -29,6 +29,7 @@ public class RoleService {
 
     public ResponseEntity getRoles() {
         try{
+            log.info("Retrieving the role list..");
             return new ResponseEntity(roleRepository.findAll(), HttpStatus.OK);
         }catch(Exception e){
             log.error("Error occurred while retrieving role data",e);
