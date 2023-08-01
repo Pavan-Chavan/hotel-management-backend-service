@@ -1,0 +1,124 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                   http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--Change Set to create table roles -->
+    <changeSet id="dhiraj-101" author="dhiraj">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="roles"/>
+            </not>
+        </preConditions>
+        <createTable tableName="roles">
+            <column name="role_name" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <!--Change Set to add few dummy records into table -->
+    <changeSet id="dhiraj-103" author="dhiraj">
+        <sqlFile path="db/procedure/roles-procedure.sql"
+                 endDelimiter=";"
+                 splitStatements="true"
+                 stripComments="true"
+                 dbms="oracle"
+                 encoding="UTF-8"/>
+    </changeSet>
+
+    <!--Change Set to create table permissions -->
+    <changeSet id="dhiraj-104" author="dhiraj">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="permissions"/>
+            </not>
+        </preConditions>
+        <createTable tableName="permissions">
+            <column name="permission_name" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <!--Change Set to add few dummy records into table permission -->
+    <changeSet id="dhiraj-106" author="dhiraj">
+        <sqlFile path="db/procedure/permissions-procedure.sql"
+                 endDelimiter=";"
+                 splitStatements="true"
+                 stripComments="true"
+                 dbms="oracle"
+                 encoding="UTF-8"/>
+    </changeSet>
+    <!--Change Set to create table login_credentials -->
+    <changeSet id="dhiraj-107" author="dhiraj">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="login_credentials"/>
+            </not>
+        </preConditions>
+        <createTable tableName="login_credentials">
+            <column name="username" type="varchar(255)">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="pass_word" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!--Change Set to create table management_users -->
+    <changeSet id="dhiraj-109" author="dhiraj">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="management_users"/>
+            </not>
+        </preConditions>
+        <createTable tableName="management_users">
+            <column name="sub_user_id" type="RAW(16)">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="role_name" type="varchar(255)">
+                <constraints nullable="false" foreignKeyName="fk_role_role_name" references="roles(role_name)"/>
+            </column>
+            <column name="username" type="varchar(255)">
+                <constraints nullable="false" foreignKeyName="fk_login_username" references="login_credentials(username)"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+<!--    &lt;!&ndash;Change Set to create sequence management_user_seq &ndash;&gt;-->
+<!--    <changeSet id="dhiraj-108" author="dhiraj">-->
+<!--        <preConditions onFail="MARK_RAN">-->
+<!--            <not>-->
+<!--                <sequenceExists sequenceName="management_user_seq"/>-->
+<!--            </not>-->
+<!--        </preConditions>-->
+<!--        <createSequence sequenceName="management_user_seq" cacheSize="20" incrementBy="1" minValue="1"-->
+<!--                        maxValue="9999999999999" ordered="false" startValue="1"/>-->
+<!--    </changeSet>-->
+
+    <changeSet id="dhiraj-110" author="dhiraj">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="sub_user_permission"/>
+            </not>
+        </preConditions>
+        <createTable tableName="sub_user_permission">
+            <column name="sub_user_id" type="raw(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="permissions" baseColumnNames="permission_name"
+                                 referencedTableName="management_users" referencedColumnNames="sub_user_id"
+                                 constraintName="fk_permission_sub_user_key"/>
+
+        <addForeignKeyConstraint baseTableName="management_users" baseColumnNames="sub_user_id"
+                                 referencedTableName="permissions" referencedColumnNames="permission_name"
+                                 constraintName="fk_sub_user_permission_key"/>
+    </changeSet>
+
+</databaseChangeLog>

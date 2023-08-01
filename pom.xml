@@ -79,7 +79,7 @@
 			<artifactId>ojdbc10</artifactId>
 			<version>${ojdbc.version}</version>
 		</dependency>
-<!--		swagger related dependancy-->
+        <!--swagger related dependency-->
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-boot-starter</artifactId>
@@ -134,6 +134,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-
 </project>

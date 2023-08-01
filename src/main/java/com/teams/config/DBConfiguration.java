@@ -6,13 +6,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
 import static com.teams.constant.HoteManagementConstants.*;
 
+/**
+ * @author dgardi
+ */
 @Configuration
 @RequiredArgsConstructor
 public class DBConfiguration {

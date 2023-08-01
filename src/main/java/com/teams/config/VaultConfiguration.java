@@ -1,19 +1,19 @@
 package com.teams.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.cloud.vault.config.SecretBackendConfigurer;
-import org.springframework.cloud.vault.config.VaultBootstrapPropertySourceConfiguration;
 import org.springframework.cloud.vault.config.VaultConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
 import java.util.Set;
 
+/**
+ * @author dgardi
+ */
 @Configuration("VaultConfiguration")
-@Slf4j
-@AutoConfigureBefore(DBConfiguration.class)
+@Order(1)
 public class VaultConfiguration {
 
     @Value("#{'${spring.cloud.vault.paths}'.split(',')}")
@@ -27,8 +27,8 @@ public class VaultConfiguration {
                 for (String paths : valuesPaths) {
                     configurer.add(paths);
                 }
+                configurer.registerDefaultDiscoveredSecretBackends(true);
                 configurer.registerDefaultDiscoveredSecretBackends(false);
-                configurer.registerDefaultKeyValueSecretBackends(true);
             }
         };
     }

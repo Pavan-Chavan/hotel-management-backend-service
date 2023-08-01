@@ -18,8 +18,19 @@
 ##Setup to add vault locally:-
 1) download vault zip file from https://developer.hashicorp.com/vault/downloads and extract it
 2) use vault server -dev to start in dev mode
-3)store the vaults tokens
+3) store the vaults tokens
  Unseal Key: ad4dZ7VTpcJV5CDJuudnhnn8JFnOL96mdLbTxP/NSSw=
  Root Token: hvs.zcluzq9YRJI6W5ehaj2NbPmo
-
 4)
+
+##To add any table in oracle using liquibase:-
+1) First create changeSet in the log file(add one entry into the db.changelog file) refer role table
+ ,role_seq or if you want to add default data into table create .sql file and add changeSet
+2) ChangeSet Id should be unique and author name must be present
+3) To run the service you have to add "dbinit" as param so that it will execute your liquibase changes,
+ after that you can remove the "dbinit" to run the service as web application.
+4) If all changeSets are executed then u will see logs of updated changeSets
+5) Also you can refer the entries are updated into "DATABASECHANGELOG" table with author name and last executed.
+6) If it is giving too much while running the service into "dbinit", you can directly run service by adding
+   "spring.jpa.hibernate.ddl-auto = update" this property into application.properties
+
