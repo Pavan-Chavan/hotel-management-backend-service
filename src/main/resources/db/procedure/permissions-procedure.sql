@@ -1,0 +1,3 @@
+INSERT INTO PERMISSIONS VALUES('admin-permission');
+INSERT INTO PERMISSIONS VALUES('login-permission');
+INSERT INTO PERMISSIONS VALUES('management_permission');
