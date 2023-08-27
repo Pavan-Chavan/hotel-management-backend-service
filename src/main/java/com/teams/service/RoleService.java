@@ -26,9 +26,10 @@ public class RoleService {
      * @param roleName
      * @return
      */
-    public ResponseEntity saveRole(String roleName) {
+    public ResponseEntity saveRole(String roleName, Boolean isDisable) {
         Role role = new Role();
         role.setRoleName(roleName);
+        role.setIsDisable(isDisable);
         try{
             role1 = roleRepository.save(role);
             log.info("Data saved successfully for roleName {}",roleName);
