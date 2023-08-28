@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
+
 
 @RestController
 @RequestMapping("/1.0/roles")
@@ -31,6 +33,7 @@ public class RoleController {
 
     @ApiOperation(value = "Get roles list",produces = "application/json")
     @GetMapping("/getRoles")
+    @RolesAllowed("user")
     public ResponseEntity getRoles(){
         try{
             return roleService.getRoles();
