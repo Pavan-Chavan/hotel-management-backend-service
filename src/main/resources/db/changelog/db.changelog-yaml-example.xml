@@ -3,6 +3,16 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
                    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
+    <changeSet id="pavan-101" author="pavan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="role_sequence"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="role_sequence" cacheSize="20" incrementBy="1" minValue="1"
+                        maxValue="9999999999999" ordered="false" startValue="1"/>
+    </changeSet>
+
     <!--Change Set to create table roles -->
     <changeSet id="dhiraj-101" author="dhiraj">
         <preConditions onFail="MARK_RAN">
@@ -11,8 +21,14 @@
             </not>
         </preConditions>
         <createTable tableName="roles">
+            <column name="role_id" type="number default role_sequence.nextval" >
+                <constraints primaryKey="false" nullable="false" />
+            </column>
             <column name="role_name" type="varchar(255)">
-                <constraints primaryKey="true" nullable="false" />
+                <constraints primaryKey="false" nullable="false" />
+            </column>
+            <column name="disable" type="CHAR(1)">
+                <constraints nullable="false" />
             </column>
         </createTable>
     </changeSet>
@@ -86,7 +102,7 @@
         </createTable>
     </changeSet>
 
-<!--    &lt;!&ndash;Change Set to create sequence management_user_seq &ndash;&gt;-->
+    <!--Change Set to create sequence management_user_seq -->
 <!--    <changeSet id="dhiraj-108" author="dhiraj">-->
 <!--        <preConditions onFail="MARK_RAN">-->
 <!--            <not>-->

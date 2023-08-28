@@ -23,9 +23,9 @@ public class RoleController {
     @ApiImplicitParam(name = "roleName",dataType = "String",required = true,
     value ="rolename should be valid role name", paramType = "query")
     @PostMapping("/saveRole")
-    public ResponseEntity saveRole(@RequestParam String roleName){
+    public ResponseEntity saveRole(@RequestParam String roleName, @RequestParam Boolean isDisable){
         try{
-            return roleService.saveRole(roleName);
+            return roleService.saveRole(roleName,isDisable);
         }catch (Exception he){
             throw new HotelManagementException(he.getMessage());
         }
