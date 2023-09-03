@@ -7,6 +7,7 @@ import com.teams.model.Role;
 import com.teams.model.SubUser;
 import com.teams.repository.LoginRepository;
 import com.teams.repository.ManagementUserRepository;
+import com.teams.repository.PermissionRepository;
 import com.teams.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,10 @@ public class ManagementUserService {
     @Autowired
     private LoginRepository loginRepository;
 
+    @Autowired
+    private PermissionRepository permissionRepository;
+    private static SubUser subUser;
+
     /**
      *
      * @param roleName
@@ -39,10 +44,20 @@ public class ManagementUserService {
      * @return
      */
     public ResponseEntity<SubUser> saveUser(String roleName, Set<String> permissionNames, String username) {
+
+        UUID uuid = UUID.randomUUID();
         try{
-            SubUser subUser = new SubUser();
-            UUID uuid = UUID.randomUUID();
-            Role role = roleRepository.findById(roleName).get();
+            Optional<SubUser> subUserOptional = managementUserRepository.findSubUserByLoginUsername(username);
+            if(subUserOptional.isPresent()){
+                log.info("Updating the sub-user record");
+                subUser = subUserOptional.get();
+            }
+            else {
+                log.info("Creating the new sub-user record");
+                subUser = new SubUser();
+                subUser.setSubUserId(uuid);
+            }
+            Role role = roleRepository.findRoleByRoleName(roleName).get();
             if(Objects.isNull(role)){
                 throw new HotelManagementException("RoleName is not available");
             }
@@ -54,15 +69,12 @@ public class ManagementUserService {
             }
             log.info("Login details are validated ");
             subUser.setLogin(login);
-            subUser.setSubUserId(uuid);
             //Iterating over the set of permissions and assigning it to the user set
-            permissionNames.stream().map(permissions1->{
-                Permission permission1 = new Permission();
-                permission1.setPermissionName(permissions1);
-                permission1.getUser().add(subUser);
-                subUser.getPermissionList().add(permission1);
-                return permission1;
-            }).collect(Collectors.toSet());
+            permissionNames.forEach(permissionName ->{
+                Permission permission = permissionRepository.findPermissionByPermissionName(permissionName).get();
+                permission.getUser().add(subUser);
+                subUser.getPermissionList().add(permission);
+            });
             log.info("Saving the sub-user details for userId: {}",uuid);
             SubUser subUser2 = managementUserRepository.save(subUser);
             return new ResponseEntity(subUser2, HttpStatus.OK);

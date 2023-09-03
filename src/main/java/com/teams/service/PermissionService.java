@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 /**
  * @author dgardi
  */
@@ -26,19 +28,30 @@ public class PermissionService {
     /**
      *
      * @param permissionName
+     * @param isDisable
      * @return
      */
-    public ResponseEntity savePermission(String permissionName) {
-        Permission permission1 = new Permission();
-        permission1.setPermissionName(permissionName);
+    public ResponseEntity savePermission(String permissionName,Boolean isDisable) {
+        Permission permission1 = null;
         try{
-            permission = permissionRepository.save(permission1);
+            Optional<Permission> permission = permissionRepository.findPermissionByPermissionName(permissionName);
+
+            if(permission.isPresent()){
+                permission1 = permission.get();
+                permission1.setIsDisable(isDisable);
+            }
+            else {
+                permission1 = new Permission();
+                permission1.setPermissionName(permissionName);
+                permission1.setIsDisable(isDisable);
+            }
+            permission1 = permissionRepository.save(permission1);
             log.info("Data saved successfully for permissionName {}",permissionName);
         }catch(Exception e){
             log.error("Error occurred while saving data ",e);
             throw new HotelManagementException(e.getMessage());
         }
-        return new ResponseEntity(permission,HttpStatus.OK);
+        return new ResponseEntity(permission1,HttpStatus.OK);
     }
 
     public ResponseEntity getPermissions() {

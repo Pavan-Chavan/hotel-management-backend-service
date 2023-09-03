@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 /**
  * @author dgardi
  */
@@ -24,20 +26,29 @@ public class RoleService {
     /**
      *
      * @param roleName
+     * @param isDisable
      * @return
      */
     public ResponseEntity saveRole(String roleName, Boolean isDisable) {
-        Role role = new Role();
-        role.setRoleName(roleName);
-        role.setIsDisable(isDisable);
+        Role roles = null;
         try{
-            role1 = roleRepository.save(role);
+            Optional<Role> role = roleRepository.findRoleByRoleName(roleName);
+            if(role.isPresent()){
+                roles = role.get();
+                roles.setIsDisable(isDisable);
+            }
+            else {
+                roles = new Role();
+                roles.setRoleName(roleName);
+                roles.setIsDisable(isDisable);
+            }
+            roleRepository.save(roles);
             log.info("Data saved successfully for roleName {}",roleName);
         }catch(Exception e){
             log.error("Error occurred while saving data ",e);
             throw new HotelManagementException(e.getMessage());
         }
-        return new ResponseEntity(role1,HttpStatus.OK);
+        return new ResponseEntity(roles,HttpStatus.OK);
     }
 
     /**

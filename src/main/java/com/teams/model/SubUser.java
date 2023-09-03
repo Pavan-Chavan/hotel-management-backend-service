@@ -20,18 +20,16 @@ public class SubUser {
     @Column(name = "sub_user_id")
     private UUID subUserId;
 
-
-
     @ManyToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
     @JoinTable(
             name = "sub_user_permission",
             joinColumns = @JoinColumn(name = "sub_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_name")
+            inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
     private Set<Permission> permissionList= new HashSet<>();
 
     @OneToOne
-    @JoinColumn(name = "role_name")
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @OneToOne

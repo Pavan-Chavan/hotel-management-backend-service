@@ -23,9 +23,9 @@ public class PermissionController {
     @ApiImplicitParam(name = "permissionName",dataType = "String",required = true,
     value ="permissionName should be valid permission name", paramType = "query")
     @PostMapping("/savePermission")
-    public ResponseEntity savePermission(@RequestParam String permissionName){
+    public ResponseEntity savePermission(@RequestParam String permissionName,@RequestParam Boolean isDisable){
         try{
-            return permissionService.savePermission(permissionName);
+            return permissionService.savePermission(permissionName,isDisable);
         }catch (Exception he){
             throw new HotelManagementException(he.getMessage());
         }

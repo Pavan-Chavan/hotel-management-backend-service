@@ -18,8 +18,15 @@ import java.util.Set;
 @Table(name = "permissions")
 public class Permission {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "permission_id")
+    Long permissionId;
+
     @Column(name = "permission_name")
     String permissionName;
+
+    @Column(name = "is_disable")
+    private Boolean isDisable;
 
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.EAGER,

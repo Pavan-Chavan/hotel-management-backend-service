@@ -20,6 +20,6 @@ public class Role {
     @Column(name = "role_name")
     private String roleName;
 
-    @Column(name = "disable")
+    @Column(name = "is_disable")
     private Boolean isDisable;
 }
