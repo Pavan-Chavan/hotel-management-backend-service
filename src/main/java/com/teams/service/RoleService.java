@@ -29,13 +29,19 @@ public class RoleService {
      * @param isDisable
      * @return
      */
-    public ResponseEntity saveRole(String roleName, Boolean isDisable) {
+    public ResponseEntity saveRole(Role role) {
+        String roleName = role.getRoleName();
+        Long roleId = role.getRoleId();
+        Boolean isDisable = role.getIsDisable();
         Role roles = null;
         try{
-            Optional<Role> role = roleRepository.findRoleByRoleName(roleName);
-            if(role.isPresent()){
-                roles = role.get();
-                roles.setIsDisable(isDisable);
+            if(roleId != null) {
+                Optional<Role> existingRole = roleRepository.findById(roleId);
+                if(existingRole.isPresent()){
+                    roles = existingRole.get();
+                    roles.setIsDisable(isDisable);
+                    roles.setRoleName((roleName));
+                }
             }
             else {
                 roles = new Role();

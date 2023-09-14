@@ -10,7 +10,7 @@ import java.util.Optional;
  * @author dgardi
  */
 @Repository
-public interface RoleRepository extends JpaRepository<Role,String> {
+public interface RoleRepository extends JpaRepository<Role,Long> {
     void deleteByRoleName(String roleName);
     Optional<Role> findRoleByRoleName(String roleName);
 }

@@ -1,6 +1,7 @@
 package com.teams.controller;
 
 import com.teams.exception.HotelManagementException;
+import com.teams.model.Role;
 import com.teams.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -23,9 +24,9 @@ public class RoleController {
     @ApiImplicitParam(name = "roleName",dataType = "String",required = true,
     value ="rolename should be valid role name", paramType = "query")
     @PostMapping("/saveRole")
-    public ResponseEntity saveRole(@RequestParam String roleName, @RequestParam Boolean isDisable){
+    public ResponseEntity saveRole(@RequestBody Role role){
         try{
-            return roleService.saveRole(roleName,isDisable);
+            return roleService.saveRole(role);
         }catch (Exception he){
             throw new HotelManagementException(he.getMessage());
         }
