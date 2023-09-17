@@ -44,12 +44,12 @@ public class RoleController {
     }
 
     @ApiOperation(value = "Delete role from list")
-    @ApiImplicitParam(name = "roleName",dataType = "String",required = true, paramType = "query",
-            value = "roleName should be valid role")
+    @ApiImplicitParam(name = "roleId",dataType = "Long",required = true, paramType = "query",
+            value = "roleId should be valid role")
     @DeleteMapping("/deleteRole")
-    public void deleteRole(@RequestParam String roleName){
+    public ResponseEntity<String> deleteRole(@RequestParam Long roleId){
         try{
-            roleService.deleteRole(roleName);
+            return roleService.deleteRole(roleId);
         }catch (Exception he){
             throw new HotelManagementException(he.getMessage());
         }

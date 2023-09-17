@@ -2,6 +2,7 @@ package com.teams.repository;
 
 import com.teams.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -10,7 +11,6 @@ import java.util.Optional;
  * @author dgardi
  */
 @Repository
-public interface RoleRepository extends JpaRepository<Role,Long> {
-    void deleteByRoleName(String roleName);
+public interface RoleRepository extends JpaRepository<Role,Long>, PagingAndSortingRepository<Role,Long> {
     Optional<Role> findRoleByRoleName(String roleName);
 }

@@ -2,6 +2,8 @@ package com.teams.service;
 
 import com.teams.exception.HotelManagementException;
 import com.teams.model.Role;
+import com.teams.model.SubUser;
+import com.teams.repository.ManagementUserRepository;
 import com.teams.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author dgardi
@@ -22,6 +28,9 @@ public class RoleService {
     Role role1 = null;
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    ManagementUserRepository managementUserRepository;
 
     /**
      *
@@ -76,13 +85,29 @@ public class RoleService {
      * @param roleName
      */
     @Transactional
-    public void deleteRole(String roleName) {
+    public ResponseEntity deleteRole(Long roleId) {
         try{
-            log.info("Deleting the role having roleName {}",roleName);
-            roleRepository.deleteByRoleName(roleName);
+            log.info("Deleting the role having roleName {}",roleId);
+
+            Optional<Role> defaultRole = roleRepository.findById(1L);
+            List<SubUser> subUserList = managementUserRepository.findByRoleRoleId(roleId);
+            if(Objects.nonNull(subUserList)) {
+                log.info("Sub user list have subusers");
+                List<SubUser> modifiedSubUserList = subUserList.stream().map(subUser -> {
+                    subUser.setIsDisable(true);
+                    subUser.setRole(defaultRole.get()); // TODO : insert ideal role when it created
+                    return subUser;
+                }).collect(Collectors.toList());
+                managementUserRepository.saveAll(modifiedSubUserList);
+            }
+            log.info("Deleting record for role id {}",roleId);
+
+            roleRepository.deleteById(roleId);
+
         }catch(Exception e){
             log.error("Error occurred while deleting role ",e);
             throw new HotelManagementException(e.getMessage());
         }
+        return new ResponseEntity("Deleted record successfully",HttpStatus.OK); // TODO : write a sepracte response DTO
     }
 }

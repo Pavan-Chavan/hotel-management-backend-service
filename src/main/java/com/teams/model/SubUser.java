@@ -28,12 +28,15 @@ public class SubUser {
     )
     private Set<Permission> permissionList= new HashSet<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id")
     private Role role;
 
     @OneToOne
     @JoinColumn(name = "username")
     private Login login;
+
+    @Column(name = "is_disable")
+    private Boolean isDisable;
 
 }
