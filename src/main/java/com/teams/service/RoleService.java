@@ -7,15 +7,18 @@ import com.teams.repository.ManagementUserRepository;
 import com.teams.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,8 +37,7 @@ public class RoleService {
 
     /**
      *
-     * @param roleName
-     * @param isDisable
+     * @param role
      * @return
      */
     public ResponseEntity saveRole(Role role) {
@@ -56,6 +58,7 @@ public class RoleService {
                 roles = new Role();
                 roles.setRoleName(roleName);
                 roles.setIsDisable(isDisable);
+                roles.setCreatedAt(new Date());
             }
             roleRepository.save(roles);
             log.info("Data saved successfully for roleName {}",roleName);
@@ -68,12 +71,20 @@ public class RoleService {
 
     /**
      *
+     * @param offset
+     * @param pageNumber
+     * @param order
      * @return
      */
-    public ResponseEntity getRoles() {
+    public ResponseEntity getRoles(Integer offset,Integer pageNumber,String order){
         try{
+            HttpHeaders headers = new HttpHeaders();
             log.info("Retrieving the role list..");
-            return new ResponseEntity(roleRepository.findAll(), HttpStatus.OK);
+            Sort sort = order.equals("ASC")?Sort.by("createdAt").ascending():Sort.by("createdAt").descending();
+            Pageable paging = PageRequest.of(pageNumber,offset, sort);
+            Page<Role> totalRecords = roleRepository.findAll(paging);
+            headers.add("total_records",String.valueOf(totalRecords.getTotalElements()));
+            return new ResponseEntity(totalRecords.getContent(),headers, HttpStatus.OK);
         }catch(Exception e){
             log.error("Error occurred while retrieving role data",e);
             throw new HotelManagementException(e.getMessage());
@@ -82,7 +93,8 @@ public class RoleService {
 
     /**
      *
-     * @param roleName
+     * @param roleId
+     * @return
      */
     @Transactional
     public ResponseEntity deleteRole(Long roleId) {

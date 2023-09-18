@@ -35,9 +35,11 @@ public class RoleController {
     @ApiOperation(value = "Get roles list",produces = "application/json")
     @GetMapping("/getRoles")
     @RolesAllowed("user")
-    public ResponseEntity getRoles(){
+    public ResponseEntity getRoles(@RequestParam(name = "offset",defaultValue = "10") Integer offset,
+                                   @RequestParam(name = "pageNo",defaultValue = "1") Integer pageNumber,
+                                   @RequestParam(name = "order", defaultValue = "ASC") String order){
         try{
-            return roleService.getRoles();
+            return roleService.getRoles(offset,pageNumber,order);
         }catch (Exception he){
             throw new HotelManagementException(he.getMessage());
         }

@@ -4,6 +4,7 @@ package com.teams.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * @author dgardi
@@ -19,6 +20,9 @@ public class Role {
 
     @Column(name = "role_name")
     private String roleName;
+
+    @Column(name = "createdAt")
+    private Date createdAt;
 
     @Column(name = "is_disable")
     private Boolean isDisable;

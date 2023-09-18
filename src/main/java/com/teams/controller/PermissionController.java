@@ -2,6 +2,7 @@ package com.teams.controller;
 
 import com.teams.exception.HotelManagementException;
 import com.teams.service.PermissionService;
+import io.github.classgraph.MappableInfoList;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -52,4 +53,12 @@ public class PermissionController {
             throw new HotelManagementException(he.getMessage());
         }
     }
+    /*
+    //TODO
+    1) Add isEnable functionality
+    2) If we delete the permission then assciated user permission should also be deleted along with permission
+    3) Add pagination support refer role get API
+    4) update the save api so that we can use single api for create and update operation
+
+     */
 }
