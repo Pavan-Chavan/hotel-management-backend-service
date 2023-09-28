@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.teams.constant.HoteManagementConstants.*;
+
 /**
  * @author dgardi
  */
@@ -83,7 +85,7 @@ public class RoleService {
             Sort sort = order.equals("ASC")?Sort.by("createdAt").ascending():Sort.by("createdAt").descending();
             Pageable paging = PageRequest.of(pageNumber,offset, sort);
             Page<Role> totalRecords = roleRepository.findAll(paging);
-            headers.add("total_records",String.valueOf(totalRecords.getTotalElements()));
+            headers.add(TOTAL_RECORD,String.valueOf(totalRecords.getTotalElements()));
             return new ResponseEntity(totalRecords.getContent(),headers, HttpStatus.OK);
         }catch(Exception e){
             log.error("Error occurred while retrieving role data",e);
@@ -121,5 +123,18 @@ public class RoleService {
             throw new HotelManagementException(e.getMessage());
         }
         return new ResponseEntity("Deleted record successfully",HttpStatus.OK); // TODO : write a sepracte response DTO
+    }
+
+    public ResponseEntity<String> updateRoleStatus(Long roleId, String status) {
+        try {
+            boolean value = status.equals(DISABLE) ? true : false ;
+            Role role = roleRepository.findById(roleId).get();
+            role.setIsDisable(value);
+            roleRepository.save(role);
+            return new ResponseEntity<>("role update successfully",HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error occurred while updating role {} ",status,e);
+            throw new HotelManagementException(e.getMessage());
+        }
     }
 }

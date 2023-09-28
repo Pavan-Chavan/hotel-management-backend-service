@@ -5,6 +5,7 @@ import com.teams.model.Role;
 import com.teams.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +36,8 @@ public class RoleController {
     @ApiOperation(value = "Get roles list",produces = "application/json")
     @GetMapping("/getRoles")
     @RolesAllowed("user")
-    public ResponseEntity getRoles(@RequestParam(name = "offset",defaultValue = "10") Integer offset,
-                                   @RequestParam(name = "pageNo",defaultValue = "1") Integer pageNumber,
+    public ResponseEntity getRoles(@RequestParam(name = "offset",defaultValue = "5") Integer offset,
+                                   @RequestParam(name = "pageNo",defaultValue = "0") Integer pageNumber,
                                    @RequestParam(name = "order", defaultValue = "ASC") String order){
         try{
             return roleService.getRoles(offset,pageNumber,order);
@@ -52,6 +53,24 @@ public class RoleController {
     public ResponseEntity<String> deleteRole(@RequestParam Long roleId){
         try{
             return roleService.deleteRole(roleId);
+        }catch (Exception he){
+            throw new HotelManagementException(he.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "Enable role")
+    @ApiImplicitParams(
+            value = {
+                @ApiImplicitParam(name = "roleId",dataType = "Long",required = true, paramType = "query",
+                value = "roleId should be valid role"),
+                @ApiImplicitParam(name = "status",dataType = "Long",required = true, paramType = "query",
+                value = "roleId should be valid role")
+            })
+    @PutMapping("/status")
+    public ResponseEntity<String> updateRoleStatus(@RequestParam Long roleId,
+                                             @RequestParam String status){
+        try{
+            return roleService.updateRoleStatus(roleId,status);
         }catch (Exception he){
             throw new HotelManagementException(he.getMessage());
         }
