@@ -10,7 +10,7 @@ import java.util.Optional;
  * @author dgardi
  */
 @Repository
-public interface PermissionRepository extends JpaRepository<Permission,String> {
+public interface PermissionRepository extends JpaRepository<Permission,Long> {
     void deleteByPermissionName(String roleName);
     Optional<Permission> findPermissionByPermissionName(String permissionName);
 }

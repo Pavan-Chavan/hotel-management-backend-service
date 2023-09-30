@@ -1,10 +1,12 @@
 package com.teams.controller;
 
 import com.teams.exception.HotelManagementException;
+import com.teams.model.Permission;
 import com.teams.service.PermissionService;
 import io.github.classgraph.MappableInfoList;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * @author dgardi
  */
 @RestController
-@RequestMapping("/1.0/roles")
+@RequestMapping("/1.0/permisisons")
 @Api(value = "Permission Apis",description = "Rest APIs to perform permission related actions")
 public class PermissionController {
     @Autowired
@@ -24,9 +26,9 @@ public class PermissionController {
     @ApiImplicitParam(name = "permissionName",dataType = "String",required = true,
     value ="permissionName should be valid permission name", paramType = "query")
     @PostMapping("/savePermission")
-    public ResponseEntity savePermission(@RequestParam String permissionName,@RequestParam Boolean isDisable){
+    public ResponseEntity savePermission(@RequestBody Permission permission){
         try{
-            return permissionService.savePermission(permissionName,isDisable);
+            return permissionService.savePermission(permission);
         }catch (Exception he){
             throw new HotelManagementException(he.getMessage());
         }
@@ -43,12 +45,30 @@ public class PermissionController {
     }
 
     @ApiOperation(value = "Delete permission from list")
-    @ApiImplicitParam(name = "permissionName",dataType = "String",required = true, paramType = "query",
+    @ApiImplicitParam(name = "permissionId",dataType = "Long",required = true, paramType = "query",
             value = "permissionName should be valid permission")
     @DeleteMapping("/deletePermission")
-    public void deletePermission(@RequestParam String permissionName){
+    public void deletePermission(@RequestParam Long permissionId){
         try{
-            permissionService.deletePermission(permissionName);
+            permissionService.deletePermission(permissionId);
+        }catch (Exception he){
+            throw new HotelManagementException(he.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "Enable permission")
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(name = "permissionId",dataType = "Long",required = true, paramType = "query",
+                            value = "roleId should be valid role"),
+                    @ApiImplicitParam(name = "status",dataType = "Long",required = true, paramType = "query",
+                            value = "roleId should be valid role")
+            })
+    @PutMapping("/status")
+    public ResponseEntity<String> updateRoleStatus(@RequestParam Long permissionId,
+                                                   @RequestParam String status){
+        try{
+            return permissionService.updateRoleStatus(permissionId,status);
         }catch (Exception he){
             throw new HotelManagementException(he.getMessage());
         }
