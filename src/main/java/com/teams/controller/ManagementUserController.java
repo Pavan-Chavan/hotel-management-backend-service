@@ -1,5 +1,6 @@
 package com.teams.controller;
 
+import com.teams.entity.models.SubUserRequestModel;
 import com.teams.service.ManagementUserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -28,11 +29,9 @@ public class ManagementUserController {
             @ApiImplicitParam(name = "permissions",dataType = "Set<String>",required = true,
                     value ="permissions to give user", paramType = "query")
     })
-    @PostMapping("/saveUser/{username}")
-    public ResponseEntity saveUsers(@RequestParam(name = "roleName") String roleName,
-                                    @RequestParam(name ="permissions") Set<String> permissions,
-                                    @PathVariable(name = "username") String username){
-        return managementUserService.saveUser(roleName,permissions,username);
+    @PostMapping("/createUser")
+    public ResponseEntity createUser(@RequestBody SubUserRequestModel subUserRequestModel){
+        return managementUserService.createUser(subUserRequestModel);
     }
 
     @ApiOperation(value = "Get user list",produces = "application/json")

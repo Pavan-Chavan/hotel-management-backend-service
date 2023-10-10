@@ -1,6 +1,6 @@
 package com.teams.repository;
 
-import com.teams.model.SubUser;
+import com.teams.entity.SubUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.teams.model;
+package com.teams.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +26,7 @@ public class SubUser {
             joinColumns = @JoinColumn(name = "sub_user_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
-    private Set<Permission> permissionList= new HashSet<>();
+    private Set<Permission> permissionSet = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id")

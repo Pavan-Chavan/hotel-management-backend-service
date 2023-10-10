@@ -1,10 +1,8 @@
 package com.teams.service;
 
 import com.teams.exception.HotelManagementException;
-import com.teams.model.Permission;
-import com.teams.model.Role;
+import com.teams.entity.Permission;
 import com.teams.repository.PermissionRepository;
-import com.teams.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

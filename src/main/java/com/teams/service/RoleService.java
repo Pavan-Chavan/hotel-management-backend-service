@@ -1,8 +1,8 @@
 package com.teams.service;
 
 import com.teams.exception.HotelManagementException;
-import com.teams.model.Role;
-import com.teams.model.SubUser;
+import com.teams.entity.Role;
+import com.teams.entity.SubUser;
 import com.teams.repository.ManagementUserRepository;
 import com.teams.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 import java.util.stream.Collectors;

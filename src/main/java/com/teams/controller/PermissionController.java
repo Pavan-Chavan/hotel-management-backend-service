@@ -1,9 +1,8 @@
 package com.teams.controller;
 
 import com.teams.exception.HotelManagementException;
-import com.teams.model.Permission;
+import com.teams.entity.Permission;
 import com.teams.service.PermissionService;
-import io.github.classgraph.MappableInfoList;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

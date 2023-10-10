@@ -1,7 +1,7 @@
 package com.teams.controller;
 
 import com.teams.exception.HotelManagementException;
-import com.teams.model.Role;
+import com.teams.entity.Role;
 import com.teams.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
