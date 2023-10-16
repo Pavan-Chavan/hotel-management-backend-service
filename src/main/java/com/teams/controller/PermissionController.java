@@ -22,8 +22,6 @@ public class PermissionController {
     PermissionService permissionService;
 
     @ApiOperation(value = "Save permission",produces = "application/json")
-    @ApiImplicitParam(name = "permissionName",dataType = "String",required = true,
-    value ="permissionName should be valid permission name", paramType = "query")
     @PostMapping("/savePermission")
     public ResponseEntity savePermission(@RequestBody Permission permission){
         try{
@@ -35,9 +33,12 @@ public class PermissionController {
 
     @ApiOperation(value = "Get permissions list",produces = "application/json")
     @GetMapping("/getPermissions")
-    public ResponseEntity getPermissions(){
+    public ResponseEntity getPermissions(@RequestParam(name = "offset",defaultValue = "5") Integer offset,
+                                         @RequestParam(name = "pageNo",defaultValue = "0") Integer pageNumber,
+                                         @RequestParam(name = "order", defaultValue = "ASC") String order,
+                                         @RequestParam(name = "roleId",required = false,defaultValue = "-1") Long permissionId){
         try{
-            return permissionService.getPermissions();
+            return permissionService.getPermissions(offset,pageNumber,order,permissionId);
         }catch (Exception he){
             throw new HotelManagementException(he.getMessage());
         }

@@ -77,10 +77,14 @@ public class RoleService {
      * @param order
      * @return
      */
-    public ResponseEntity getRoles(Integer offset,Integer pageNumber,String order){
+    public ResponseEntity getRoles(Integer offset,Integer pageNumber,String order,Long roleId){
         try{
             HttpHeaders headers = new HttpHeaders();
             log.info("Retrieving the role list..");
+            if(roleId != -1){
+                Role role = roleRepository.findById(roleId).get();
+                return new ResponseEntity(role,HttpStatus.OK);
+            }
             Sort sort = order.equals("ASC")?Sort.by("createdAt").ascending():Sort.by("createdAt").descending();
             Pageable paging = PageRequest.of(pageNumber,offset, sort);
             Page<Role> totalRecords = roleRepository.findAll(paging);

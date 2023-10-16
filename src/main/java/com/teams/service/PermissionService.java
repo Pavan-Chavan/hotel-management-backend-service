@@ -1,10 +1,16 @@
 package com.teams.service;
 
+import com.teams.entity.Role;
 import com.teams.exception.HotelManagementException;
 import com.teams.entity.Permission;
 import com.teams.repository.PermissionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 import static com.teams.constant.HoteManagementConstants.DISABLE;
+import static com.teams.constant.HoteManagementConstants.TOTAL_RECORD;
 
 /**
  * @author dgardi
@@ -60,10 +67,21 @@ public class PermissionService {
         return new ResponseEntity(permission,HttpStatus.OK);  // TODO : update response with statdard respose dto
     }
 
-    public ResponseEntity getPermissions() {
+    public ResponseEntity getPermissions(Integer offset,Integer pageNumber,String order,Long permissionId) {
         try{
-            log.info("Retrieving the permissions list..");
-            return new ResponseEntity(permissionRepository.findAll(), HttpStatus.OK);
+            HttpHeaders headers = new HttpHeaders();
+
+            if(permissionId != -1){
+                log.info("Retrieving the permission for permissionId: {}",permissionId);
+                Permission permission = permissionRepository.findById(permissionId).get();
+                return new ResponseEntity(permission,HttpStatus.OK);
+            }
+            log.info("Retrieving the permission list..");
+            Sort sort = order.equals("ASC")?Sort.by("createdAt").ascending():Sort.by("createdAt").descending();
+            Pageable paging = PageRequest.of(pageNumber,offset, sort);
+            Page<Permission> totalRecords = permissionRepository.findAll(paging);
+            headers.add(TOTAL_RECORD,String.valueOf(totalRecords.getTotalElements()));
+            return new ResponseEntity(totalRecords.getContent(), headers, HttpStatus.OK);
         }catch(Exception e){
             log.error("Error occurred while retrieving permission data",e);
             throw new HotelManagementException(e.getMessage());

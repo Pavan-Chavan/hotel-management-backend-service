@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,11 +29,15 @@ public class Permission {
     @Column(name = "is_disable")
     private Boolean isDisable;
 
+    @JsonIgnore
+    @Column(name = "createdAt")
+    private Date createdAt;
+
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
                     CascadeType.ALL
-            },mappedBy = "permissionList")
+            },mappedBy = "permissionSet")
     @JsonIgnore
     private Set<SubUser> user= new HashSet<>();
 }

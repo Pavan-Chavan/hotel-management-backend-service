@@ -1,6 +1,7 @@
 package com.teams.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ public class Role {
     @Column(name = "role_name")
     private String roleName;
 
+    @JsonIgnore
     @Column(name = "createdAt")
     private Date createdAt;
 

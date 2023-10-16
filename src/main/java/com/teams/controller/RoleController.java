@@ -38,9 +38,10 @@ public class RoleController {
     @RolesAllowed("user")
     public ResponseEntity getRoles(@RequestParam(name = "offset",defaultValue = "5") Integer offset,
                                    @RequestParam(name = "pageNo",defaultValue = "0") Integer pageNumber,
-                                   @RequestParam(name = "order", defaultValue = "ASC") String order){
+                                   @RequestParam(name = "order", defaultValue = "ASC") String order,
+                                   @RequestParam(name = "roleId",required = false,defaultValue = "-1") Long roleId){
         try{
-            return roleService.getRoles(offset,pageNumber,order);
+            return roleService.getRoles(offset,pageNumber,order,roleId);
         }catch (Exception he){
             throw new HotelManagementException(he.getMessage());
         }

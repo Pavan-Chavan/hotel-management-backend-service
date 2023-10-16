@@ -28,7 +28,7 @@ public class SubUser {
     )
     private Set<Permission> permissionSet = new HashSet<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "role_id")
     private Role role;
 

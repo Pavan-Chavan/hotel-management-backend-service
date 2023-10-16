@@ -11,12 +11,14 @@ import com.teams.repository.ManagementUserRepository;
 import com.teams.repository.PermissionRepository;
 import com.teams.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author dgardi
@@ -43,54 +45,43 @@ public class ManagementUserService {
      * @param subUserRequestModel
      * @return
      */
-    public ResponseEntity<SubUser> createUser(SubUserRequestModel subUserRequestModel) {
+    public ResponseEntity createUser(SubUserRequestModel subUserRequestModel) {
 
         UUID uuid = UUID.randomUUID();
-        Role role = null;
-        Login login = null;
         try{
             Optional<SubUser> subUserOptional = managementUserRepository.findSubUserByLoginUsername(subUserRequestModel.getUsername());
             if(subUserOptional.isPresent()){
-                log.info("Updating the sub-user record");
-                subUser = subUserOptional.get();
-            } else {
-                log.info("Creating the new sub-user record");
-                subUser = new SubUser();
-                subUser.setSubUserId(uuid);
+                log.info("SubUser is already present for username {}",subUserRequestModel.getUsername());
+                return new ResponseEntity<>("SubUser already existed",HttpStatus.FOUND);
             }
-            //assign the roleName from the role table
-            role = roleRepository.findRoleByRoleName(subUserRequestModel.getRoleName()).get();
-            log.info("RoleName is added {}",role.getRoleName());
+            log.info("Creating the new sub-user record");
+            subUser = new SubUser();
+            subUser.setSubUserId(uuid);
+            subUser.setIsDisable(subUserRequestModel.getIsDisable());
+            Role role = roleRepository.findById(subUserRequestModel.getRoleId()).get();
+            if(Objects.isNull(role)){
+                throw new HotelManagementException("RoleName is not available");
+            }
+            log.info("RoleName is validated");
             subUser.setRole(role);
 
-            Optional<Login> loginOptional = loginRepository.findById(subUserRequestModel.getUsername());
-            if(loginOptional.isPresent()){
-                log.info("update the password for username:{}",subUserRequestModel.getUsername());
-                login = loginOptional.get();
-                login.setPassword(subUserRequestModel.getPassword());
-
-            } else {
-                if(subUserRequestModel.getPassword() == null)   {
-                     login = new Login();
-                     login.setUsername(subUserRequestModel.getUsername());
-                     login.setPassword(DEFAULT_PASSWORD);
-                }
-            }
+            Login login = new Login();
+            login.setUsername(subUserRequestModel.getUsername());
+            login.setPassword(DEFAULT_PASSWORD);
             login = loginRepository.save(login);
             log.info("Login details are validated ");
             subUser.setLogin(login);
 
             //Iterating over the set of permissions and assigning it to the user set
-            if(subUserRequestModel.getPermissions() != null){
-                subUserRequestModel.getPermissions().forEach(permissionName ->{
-                    Permission permission = permissionRepository.findPermissionByPermissionName(permissionName).get();
-                    permission.getUser().add(subUser);
-                    subUser.getPermissionSet().add(permission);
-                });
-            }
+            subUserRequestModel.getPermissionsIds().forEach(permissionId ->{
+                Permission permission = permissionRepository.findById(permissionId).get();
+                permission.getUser().add(subUser);
+                subUser.getPermissionSet().add(permission);
+            });
+
             log.info("Saving the sub-user details for userId: {}",uuid);
-            subUser = managementUserRepository.save(subUser);
-            return new ResponseEntity(subUser, HttpStatus.OK);
+            SubUser subUser2 = managementUserRepository.save(subUser);
+            return new ResponseEntity(subUser2, HttpStatus.OK);
         }catch (Exception e){
             log.error("Error occurred while saving the user details for {} {} ",subUserRequestModel.getUsername(),e);
             throw new HotelManagementException(e.getMessage());
@@ -107,6 +98,40 @@ public class ManagementUserService {
             return new ResponseEntity(subUserList,HttpStatus.OK);
         }catch(Exception e){
             log.error("Error occurred while retrieving the data for users",e);
+            throw new HotelManagementException(e.getMessage());
+        }
+    }
+
+    public SubUser updateUser(SubUserRequestModel subUserRequestModel) {
+        UUID uuid = UUID.randomUUID();
+        Role role = null;
+        Login login = null;
+        try{
+            Optional<SubUser> subUserOptional = managementUserRepository.findById(subUserRequestModel.getSubUserId());
+            if(subUserOptional.isPresent()){
+                log.info("Updating the sub-user record");
+                subUser = subUserOptional.get();
+            }
+
+            //assign the roleName from the role table
+            role = roleRepository.findById(subUserRequestModel.getRoleId()).get();
+            if(role.getRoleId() != subUserRequestModel.getRoleId()){
+                subUser.setRole(role);
+            }
+            subUser.setPermissionSet(new HashSet<>());
+            if((CollectionUtils.isNotEmpty(subUserRequestModel.getPermissionsIds()))) {
+                subUserRequestModel.getPermissionsIds().forEach(permissionId ->{
+                    Permission permission = permissionRepository.findById(permissionId).get();
+                    permission.getUser().add(subUser);
+                    subUser.getPermissionSet().add(permission);
+                });
+            }
+            subUser.setIsDisable(subUserRequestModel.getIsDisable());
+            log.info("Saving the sub-user details for userId: {}",uuid);
+            subUser = managementUserRepository.save(subUser);
+            return subUser;
+        } catch (Exception e){
+            log.error("Error occurred while saving the user details for {} {} ",subUserRequestModel.getUsername(),e);
             throw new HotelManagementException(e.getMessage());
         }
     }
