@@ -17,6 +17,8 @@ public interface ManagementUserRepository extends JpaRepository<SubUser, UUID> {
     Optional<SubUser> findSubUserByLoginUsername(String userName);
     List<SubUser> findByRoleRoleId(Long id);
 
+    SubUser findSubUserBySubUserId(UUID subUserId);
+
 //    @Modifying
 //    @Query("DELETE FROM sub_user_permission SUP WHERE SUP.sub_user_id = : subUserId AND SUP.permission_id =: permissionId")
 //    void deletePermissionWithAssociation(@Param("subUserId") UUID subUserId,@Param("permissionId") Long permissionId);

@@ -10,6 +10,7 @@ import com.teams.repository.LoginRepository;
 import com.teams.repository.ManagementUserRepository;
 import com.teams.repository.PermissionRepository;
 import com.teams.repository.RoleRepository;
+import io.swagger.v3.oas.models.media.UUIDSchema;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.teams.constant.HoteManagementConstants.DISABLE;
 
 /**
  * @author dgardi
@@ -92,8 +95,11 @@ public class ManagementUserService {
      *
      * @return list of user along with its permissions
      */
-    public ResponseEntity getUsers() {
+    public ResponseEntity getUsers(UUID subUserId) {
         try{
+            if(subUserId != null) {
+                return new ResponseEntity(managementUserRepository.findById(subUserId),HttpStatus.OK);
+            }
             List<SubUser> subUserList = managementUserRepository.findAll();
             return new ResponseEntity(subUserList,HttpStatus.OK);
         }catch(Exception e){
@@ -132,6 +138,30 @@ public class ManagementUserService {
             return subUser;
         } catch (Exception e){
             log.error("Error occurred while saving the user details for {} {} ",subUserRequestModel.getUsername(),e);
+            throw new HotelManagementException(e.getMessage());
+        }
+    }
+
+    public ResponseEntity<String> updateRoleStatus(UUID subUserId, String status) {
+        try {
+            boolean value = status.equals(DISABLE);
+            SubUser subUser = managementUserRepository.findById(subUserId).get();
+            subUser.setIsDisable(value);
+            managementUserRepository.save(subUser);
+            return new ResponseEntity<>("sub user update successfully",HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error occurred while updating role {} ",status,e);
+            throw new HotelManagementException(e.getMessage());
+        }
+    }
+
+    public ResponseEntity<String> deleteRole(UUID subUserId) {
+        try {
+            managementUserRepository.deleteById(subUserId);
+            return new ResponseEntity<>("Delete succefully",HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("Error occurred while updating role {} ",subUserId,e);
             throw new HotelManagementException(e.getMessage());
         }
     }
