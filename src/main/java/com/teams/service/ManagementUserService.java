@@ -157,11 +157,18 @@ public class ManagementUserService {
 
     public ResponseEntity<String> deleteRole(UUID subUserId) {
         try {
+            SubUser subUser  = managementUserRepository.findById(subUserId).get();
+            subUser.getPermissionSet().stream().forEach(
+                    permission -> {
+                        permission.getUser().remove(subUser);
+                    }
+            );
+            subUser.getPermissionSet().removeAll(subUser.getPermissionSet());
             managementUserRepository.deleteById(subUserId);
-            return new ResponseEntity<>("Delete succefully",HttpStatus.OK);
+            return new ResponseEntity<>("Delete successfully",HttpStatus.OK);
 
         } catch (Exception e) {
-            log.error("Error occurred while updating role {} ",subUserId,e);
+            log.error("Error occurred while deleting sub-user {} ",subUserId,e);
             throw new HotelManagementException(e.getMessage());
         }
     }

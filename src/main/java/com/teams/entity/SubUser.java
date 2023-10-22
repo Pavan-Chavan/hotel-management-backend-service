@@ -20,7 +20,7 @@ public class SubUser {
     @Column(name = "sub_user_id")
     private UUID subUserId;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE},fetch = FetchType.EAGER)
     @JoinTable(
             name = "sub_user_permission",
             joinColumns = @JoinColumn(name = "sub_user_id"),

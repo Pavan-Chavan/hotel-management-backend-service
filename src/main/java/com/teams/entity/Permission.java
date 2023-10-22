@@ -33,10 +33,11 @@ public class Permission {
     @Column(name = "createdAt")
     private Date createdAt;
 
-    @ToString.Exclude
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
-                    CascadeType.ALL
+                    CascadeType.MERGE,
+                    CascadeType.PERSIST,
+                    CascadeType.REFRESH
             },mappedBy = "permissionSet")
     @JsonIgnore
     private Set<SubUser> user= new HashSet<>();
