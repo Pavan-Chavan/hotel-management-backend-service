@@ -1,4 +1,4 @@
-package com.teams.model;
+package com.teams.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,22 +20,23 @@ public class SubUser {
     @Column(name = "sub_user_id")
     private UUID subUserId;
 
-
-
-    @ManyToMany(cascade = {CascadeType.ALL},fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE},fetch = FetchType.EAGER)
     @JoinTable(
             name = "sub_user_permission",
             joinColumns = @JoinColumn(name = "sub_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_name")
+            inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
-    private Set<Permission> permissionList= new HashSet<>();
+    private Set<Permission> permissionSet = new HashSet<>();
 
     @OneToOne
-    @JoinColumn(name = "role_name")
+    @JoinColumn(name = "role_id")
     private Role role;
 
     @OneToOne
     @JoinColumn(name = "username")
     private Login login;
+
+    @Column(name = "is_disable")
+    private Boolean isDisable;
 
 }

@@ -76,7 +76,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.oracle.database.jdbc</groupId>
-			<artifactId>ojdbc10</artifactId>
+			<artifactId>ojdbc8</artifactId>
 			<version>${ojdbc.version}</version>
 		</dependency>
         <!--swagger related dependency-->
@@ -101,6 +101,20 @@
 			<artifactId>liquibase-core</artifactId>
 			<version>4.23.0</version>
 		</dependency>
+
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-security</artifactId>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.keycloak</groupId>-->
+<!--			<artifactId>keycloak-spring-boot-starter</artifactId>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.keycloak</groupId>-->
+<!--			<artifactId>keycloak-adapter-core</artifactId>-->
+<!--			<version>15.0.2</version>-->
+<!--		</dependency>-->
 	</dependencies>
 
 	<repositories>
@@ -123,6 +137,14 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>org.keycloak.bom</groupId>
+				<artifactId>keycloak-adapter-bom</artifactId>
+				<version>20.0.3</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -132,6 +154,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-		</plugins>
+        </plugins>
 	</build>
 </project>

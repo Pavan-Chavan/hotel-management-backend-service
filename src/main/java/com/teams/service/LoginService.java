@@ -1,7 +1,7 @@
 package com.teams.service;
 
 import com.teams.exception.HotelManagementException;
-import com.teams.model.Login;
+import com.teams.entity.Login;
 import com.teams.repository.LoginRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

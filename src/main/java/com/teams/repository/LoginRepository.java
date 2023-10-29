@@ -1,6 +1,6 @@
 package com.teams.repository;
 
-import com.teams.model.Login;
+import com.teams.entity.Login;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
