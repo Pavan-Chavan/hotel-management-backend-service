@@ -2,28 +2,35 @@ package com.teams.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author pachavan
  */
-@Data
+@Getter
+@Setter
 @Entity
-@Table(name = "food_item")
-public class FoodItem {
+@Table(name = "category")
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "food_item_id")
-    private Long foodItemId;
+    private Long categoryId;
 
-    @Column(name = "food_item_name")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
+    private List<FoodItem> foodItemList;
+
+    @Column(name = "category_name")
     private String name;
-
-    @Column(name = "food_item_price")
-    private double price;
 
     @JsonIgnore
     @Column(name = "createdAt")

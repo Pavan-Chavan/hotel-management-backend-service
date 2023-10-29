@@ -1,60 +1,69 @@
 package com.teams.service;
 
+import com.teams.entity.Category;
 import com.teams.entity.FoodItem;
+import com.teams.entity.models.CategoryModel;
 import com.teams.entity.models.ResponseMessage;
 import com.teams.exception.HotelManagementException;
+import com.teams.repository.CategoryRepository;
 import com.teams.repository.FoodItemRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author pachavan
  */
 @Service
 @Slf4j
-public class FoodItemService {
+public class CategoryService {
 
     @Autowired
-    FoodItemRepository foodItemRepository;
+    CategoryRepository categoryRepository;
 
-    public List<FoodItem> getFoodItems(Integer offset, Integer pageNumber, String order, Long foodItemId) {
+    public List<Category> getCategories(Integer offset, Integer pageNumber, String order, Long categoryId) {
         try {
-            List<FoodItem> foodItems = new ArrayList<>();
-            if(foodItemId != -1) {
-                log.info("fetching food item details with id {}",foodItemId);
-                foodItems.add(foodItemRepository.findById(foodItemId).get());
+            List<Category> categories = new ArrayList<>();
+            if(categoryId != -1) {
+                log.info("fetching food item details with id {}",categoryId);
+                categories.add(categoryRepository.findById(categoryId).get());
             } else {
                 log.info("fetching food item details");
-                foodItems = foodItemRepository.findAll();
+                categories = categoryRepository.findAll();
             }
-            return foodItems;
+            return categories;
         } catch (Exception e) {
             throw new HotelManagementException(e.getMessage());
         }
     }
 
-    public ResponseMessage saveFoodItem(FoodItem foodItem) {
+    public ResponseMessage saveCategory(CategoryModel categoryModel) {
         try {
-            foodItem.setCreatedAt(new Date());
-            log.info("Saving food item");
-            foodItemRepository.save(foodItem);
+            Category category = new Category();
+
+            category.setName(categoryModel.getCategoryName());
+            category.setCreatedAt(new Date());
+
+            log.info("Saving category...");
+            categoryRepository.save(category);
             return new ResponseMessage("Item Saved Succefully");
         } catch (Exception e) {
             throw new HotelManagementException(e.getMessage());
         }
     }
 
-    public ResponseMessage deleteFoodItem(Long foodItemId) {
+    public ResponseMessage deleteCategories(Long categoryId) {
         try {
-            log.info("Deleting food item with id {}",foodItemId);
-            Optional<FoodItem> foodItem = foodItemRepository.findById(foodItemId);
-            if(foodItem.isPresent()) {
-                foodItemRepository.deleteById(foodItemId);
-                return new ResponseMessage("Food Item " + foodItem.get().getName() + "delete succefully");
+            log.info("Deleting food item with id {}",categoryId);
+            Optional<Category> category = categoryRepository.findById(categoryId);
+            if(category.isPresent()) {
+                categoryRepository.deleteById(categoryId);
+                return new ResponseMessage(category.get().getName() + " delete succefully");
             } else {
                 return new ResponseMessage("Unable to delete");
             }
@@ -63,13 +72,12 @@ public class FoodItemService {
         }
     }
 
-    public ResponseMessage updateFoodItem(FoodItem foodItem) {
+    public ResponseMessage updateCategory(CategoryModel categoryModel) {
         try {
-            FoodItem existingFoodItem = foodItemRepository.findById(foodItem.getFoodItemId()).get();
-            existingFoodItem.setName(foodItem.getName());
-            existingFoodItem.setPrice(foodItem.getPrice());
-            foodItemRepository.save(existingFoodItem);
-            return new ResponseMessage(existingFoodItem.getName() + "updated succefully");
+            Category existingCategory = categoryRepository.findById(categoryModel.getCatergoryId()).get();
+            existingCategory.setName(categoryModel.getCategoryName());
+            categoryRepository.save(existingCategory);
+            return new ResponseMessage(existingCategory.getName() + "updated succefully");
         } catch (Exception e) {
             throw new HotelManagementException(e.getMessage());
         }
