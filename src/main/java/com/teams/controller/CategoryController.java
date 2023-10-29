@@ -48,7 +48,7 @@ public class CategoryController {
     @ApiOperation(value = "Delete Category")
     @ApiImplicitParam(name = "categoryId",dataType = "Long",required = true, paramType = "query",
             value = "categoryId should be valid categoryId")
-    @DeleteMapping("/deleteFoodItemId")
+    @DeleteMapping("/deleteCategory")
     public ResponseEntity<String> deleteRole(@RequestParam Long categoryId){
         try{
             return new ResponseEntity(categoryService.deleteCategories(categoryId),HttpStatus.OK);
