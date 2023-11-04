@@ -13,6 +13,8 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author pachavan
@@ -41,4 +43,13 @@ public class FoodItem {
     @JsonIgnore
     @Column(name = "createdAt")
     private Date createdAt;
+
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {
+                    CascadeType.MERGE,
+                    CascadeType.PERSIST,
+                    CascadeType.REFRESH
+            },mappedBy = "foodItems")
+    @JsonIgnore
+    private Set<Orders> orders = new HashSet<>();
 }
