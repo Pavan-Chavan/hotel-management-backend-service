@@ -7,5 +7,6 @@ public class FoodItemModel {
     Long foodItemId;
     String foodItemName;
     Double foodItemPrice;
-    long categoryId;
+    Long categoryId;
+    Integer quantity;
 }

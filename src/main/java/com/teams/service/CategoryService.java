@@ -51,7 +51,7 @@ public class CategoryService {
 
             log.info("Saving category...");
             categoryRepository.save(category);
-            return new ResponseMessage("Item Saved Succefully");
+            return new ResponseMessage("Item Saved Successfully");
         } catch (Exception e) {
             throw new HotelManagementException(e.getMessage());
         }
@@ -63,7 +63,7 @@ public class CategoryService {
             Optional<Category> category = categoryRepository.findById(categoryId);
             if(category.isPresent()) {
                 categoryRepository.deleteById(categoryId);
-                return new ResponseMessage(category.get().getName() + " delete succefully");
+                return new ResponseMessage(category.get().getName() + " delete successfully");
             } else {
                 return new ResponseMessage("Unable to delete");
             }
@@ -77,7 +77,7 @@ public class CategoryService {
             Category existingCategory = categoryRepository.findById(categoryModel.getCategoryId()).get();
             existingCategory.setName(categoryModel.getCategoryName());
             categoryRepository.save(existingCategory);
-            return new ResponseMessage(existingCategory.getName() + "updated succefully");
+            return new ResponseMessage(existingCategory.getName() + "updated successfully");
         } catch (Exception e) {
             throw new HotelManagementException(e.getMessage());
         }

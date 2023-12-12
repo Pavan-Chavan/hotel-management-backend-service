@@ -12,7 +12,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.persistence.Table;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,16 +40,16 @@ public class FoodItem {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @JsonIgnore
-    @Column(name = "createdAt")
-    private Date createdAt;
-
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {
                     CascadeType.MERGE,
                     CascadeType.PERSIST,
                     CascadeType.REFRESH
-            },mappedBy = "foodItems")
+            },mappedBy = "foodItemSet")
     @JsonIgnore
-    private Set<Orders> orders = new HashSet<>();
+    private Set<Orders> orderSet= new HashSet<>();
+
+    @JsonIgnore
+    @Column(name = "createdAt")
+    private Date createdAt;
 }

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.4</version><!-- downgraded this version as we have to swagger else go with 3.x version-->
+		<version>2.7.4</version><!-- downgraded this version as we have to use swagger else go with 3.x version-->
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.teams</groupId>
@@ -38,6 +38,11 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-vault-config</artifactId>
 			<version>3.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-elasticsearch</artifactId>
 		</dependency>
 
 		<dependency>
@@ -106,7 +111,14 @@
 			<version>4.23.0</version>
 		</dependency>
 
+<!--		&lt;!&ndash; https://mvnrepository.com/artifact/org.elasticsearch.client/transport &ndash;&gt;-->
 <!--		<dependency>-->
+<!--			<groupId>org.elasticsearch.client</groupId>-->
+<!--			<artifactId>transport</artifactId>-->
+<!--			<version>5.1.1</version>-->
+<!--		</dependency>-->
+
+		<!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
 <!--			<artifactId>spring-boot-starter-security</artifactId>-->
 <!--		</dependency>-->

@@ -9,4 +9,5 @@ public class HoteManagementConstants {
     public static final String TOTAL_RECORD= "total_records";
     public static final String ENABLE= "enable";
     public static final String DISABLE= "disable";
+    public static final String ORDER_INDEX_PATTERN= "restaurants_orders_*";
 }
