@@ -39,7 +39,7 @@ public class PermissionService {
      * @return
      */
     public ResponseEntity savePermission(Permission permissionDto) {
-        String permissionName =  permissionDto.getPermissionName();
+        String permissionName =  permissionDto .getPermissionName();
         Long permissionId = permissionDto.getPermissionId();
         Boolean isDisable = permissionDto.getIsDisable();
         Permission permission = null;

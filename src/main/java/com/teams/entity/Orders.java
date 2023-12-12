@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * @author dgardi
  */
-@Table(name = "orders")
+@javax.persistence.Table(name = "orders")
 @Setter
 @Getter
 @Entity

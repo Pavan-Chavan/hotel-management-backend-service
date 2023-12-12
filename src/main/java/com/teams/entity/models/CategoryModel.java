@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class CategoryModel {
-    Long catergoryId;
+    Long categoryId;
     String categoryName;
 }

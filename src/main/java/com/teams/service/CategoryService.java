@@ -74,7 +74,7 @@ public class CategoryService {
 
     public ResponseMessage updateCategory(CategoryModel categoryModel) {
         try {
-            Category existingCategory = categoryRepository.findById(categoryModel.getCatergoryId()).get();
+            Category existingCategory = categoryRepository.findById(categoryModel.getCategoryId()).get();
             existingCategory.setName(categoryModel.getCategoryName());
             categoryRepository.save(existingCategory);
             return new ResponseMessage(existingCategory.getName() + "updated succefully");
