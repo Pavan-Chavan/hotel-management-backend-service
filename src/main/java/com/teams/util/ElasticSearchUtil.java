@@ -26,16 +26,14 @@ public class ElasticSearchUtil {
     RestHighLevelClient elasticSearchClient;
 
     //to get particular document from the elastic
-    public Map<String, DocumentField> getDocumentById(String id, String indexName) {
+    public Map<String, Object> getDocumentById(String id, String indexName) {
         try{
             // Create a GetRequest to check document existence
             GetRequest getRequest = new GetRequest(indexName, id);
-            // Disable source retrieval, as we only want to check existence
-            getRequest.fetchSourceContext(new FetchSourceContext(false));
             if(isIdExists(id,indexName)){
                 // Execute the request
                 GetResponse response = elasticSearchClient.get(getRequest, RequestOptions.DEFAULT);
-                return response.getFields();
+                return response.getSource();
             } else{
                 throw new HotelManagementException("Particular Id "+id +" is not present in elastic index");
             }

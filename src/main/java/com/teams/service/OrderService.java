@@ -123,7 +123,7 @@ public class OrderService {
             indexRequest.index(indexName);
 
             if(elasticSearchUtil.isIdExists(orderId,indexName)){
-                Map<String, DocumentField> orderMap = elasticSearchUtil.getDocumentById(orderId, indexName);
+                Map<String, Object> orderMap = elasticSearchUtil.getDocumentById(orderId, indexName);
                 elasticOrderModel = convertMapObjectIntoElasticOrderModel(orderMap);
                 elasticOrderModel.setSubUser(order.getSubUser().getSubUserId());
                 elasticOrderModel.setFoodItemList(order.getFoodItemSet()
@@ -165,7 +165,7 @@ public class OrderService {
         return foodItemModel;
     }
 
-    private ElasticOrderModel convertMapObjectIntoElasticOrderModel(Map<String, DocumentField> orderMap) {
+    private ElasticOrderModel convertMapObjectIntoElasticOrderModel(Map<String, Object> orderMap) {
         ObjectMapper objectMapper = new ObjectMapper();
         ElasticOrderModel elasticOrderModel = objectMapper.convertValue(orderMap, ElasticOrderModel.class);
         return elasticOrderModel;
