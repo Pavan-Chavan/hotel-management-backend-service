@@ -50,6 +50,9 @@ public class FoodItem {
     @JsonIgnore
     private Set<Orders> orderSet= new HashSet<>();
 
+    @Column(name = "food_item_description")
+    private String foodItemDescription;
+
     @JsonIgnore
     @Column(name = "createdAt")
     private Date createdAt;

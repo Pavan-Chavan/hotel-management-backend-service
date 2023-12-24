@@ -30,4 +30,11 @@ public class FoodItemOrders {
 
     @Column(name = "quantity")
     private Integer quantity;
+
+    @Column(name = "status")
+    private String status;
+
+    @OneToOne
+    @JoinColumn(name = "sub_user_id")
+    private SubUser subUser;
 }
