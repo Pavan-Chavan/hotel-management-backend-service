@@ -1,15 +1,10 @@
 package com.teams.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.teams.entity.models.*;
+import com.teams.repository.*;
 import org.elasticsearch.action.index.IndexRequest;
 import com.teams.entity.*;
-import com.teams.entity.models.ElasticOrderModel;
-import com.teams.entity.models.FoodItemModel;
-import com.teams.entity.models.OrdersModel;
-import com.teams.repository.FoodItemRepository;
-import com.teams.repository.FoodItemsOrdersRepository;
-import com.teams.repository.ManagementUserRepository;
-import com.teams.repository.OrdersRepository;
 import com.teams.util.ElasticSearchUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.index.IndexResponse;
@@ -17,6 +12,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.document.DocumentField;
 import org.elasticsearch.xcontent.XContentType;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -47,32 +43,37 @@ public class OrderService {
     RestHighLevelClient elasticSearchClient;
     @Autowired
     ElasticSearchUtil elasticSearchUtil;
+    @Autowired
+    TableRepository tableRepository;
 
-    public Orders saveOrderDetails(OrdersModel ordersModel) {
+    public ResponseMessage saveOrderDetails(OrdersModel ordersModel) {
         UUID uuid = UUID.randomUUID();
         Orders order = new Orders();
         try{
             order.setOrderId(uuid);
-            SubUser subUser = managementUserRepository.findSubUserBySubUserId(UUID.fromString(ordersModel.getSubUserId()));
-            order.setSubUser(subUser);
             log.info("Added sub-user details to the order");
             ordersModel.getOrderDetails().entrySet().stream().forEach(map ->{
                 FoodItem foodItem = foodItemRepository.findById(map.getKey()).get();
                 order.getFoodItemSet().add(foodItem);
                 foodItem.getOrderSet().add(order);
             });
+            Table table = tableRepository.findById(ordersModel.getTableId()).get();
+            order.setTable(table);
+
             ordersRepository.save(order);
             log.info("Updating all the quantity values into the table");
             List<FoodItemOrders> foodItemOrders = updateQuantityInFoodItemOrders(ordersModel, uuid);
+
             if(elasticEnabled){
                 saveOrUpdateOrderDetailsIntoElastic(order,foodItemOrders);
             }
             log.info("Saved the order details for OrderId {}",uuid);
+
         } catch (Exception e){
             log.error("Error occurred while saving the order details {}",uuid);
             throw new RuntimeException("Error occurred while saving the order details");
         }
-        return order;
+        return new ResponseMessage("Order saved !!!");
     }
 
     public Orders updateOrderDetails(OrdersModel ordersModel){
@@ -80,11 +81,11 @@ public class OrderService {
             Optional<Orders> ordersOptional = ordersRepository.findById(ordersModel.getOrderId());
             if(ordersOptional.isPresent()){
                 Orders orders = ordersOptional.get();
-                if(orders.getSubUser()!= null && !orders.getSubUser().getSubUserId().toString().equalsIgnoreCase(ordersModel.getSubUserId())){
-                    SubUser subUser = managementUserRepository.findSubUserBySubUserId(UUID.fromString(ordersModel.getSubUserId()));
-                    orders.setSubUser(subUser);
-                    log.info("Added sub-user details to the order with sub-userId {}",subUser.getSubUserId());
-                }
+//                if(orders.getSubUser()!= null && !orders.getSubUser().getSubUserId().toString().equalsIgnoreCase(ordersModel.getSubUserId())){
+//                    SubUser subUser = managementUserRepository.findSubUserBySubUserId(UUID.fromString(ordersModel.getSubUserId()));
+//                    orders.setSubUser(subUser);
+//                    log.info("Added sub-user details to the order with sub-userId {}",subUser.getSubUserId());
+//                }
                 if(!orders.getFoodItemSet().isEmpty()){
                     Set<FoodItem> foodItemSet = orders.getFoodItemSet();
                     ordersModel.getOrderDetails().entrySet().stream().forEach(map ->{
@@ -125,7 +126,7 @@ public class OrderService {
             if(elasticSearchUtil.isIdExists(orderId,indexName)){
                 Map<String, Object> orderMap = elasticSearchUtil.getDocumentById(orderId, indexName);
                 elasticOrderModel = convertMapObjectIntoElasticOrderModel(orderMap);
-                elasticOrderModel.setSubUser(order.getSubUser().getSubUserId());
+//                elasticOrderModel.setSubUser(order.getSubUser().getSubUserId());
                 elasticOrderModel.setFoodItemList(order.getFoodItemSet()
                                 .stream()
                                 .map(foodItem -> setFoodItem(foodItem,foodItemOrdersList))
@@ -134,7 +135,7 @@ public class OrderService {
             else {
                 elasticOrderModel = ElasticOrderModel.builder()
                         .orderId(order.getOrderId())
-                        .subUser(order.getSubUser().getSubUserId())
+//                        .subUser(order.getSubUser().getSubUserId())
                         .foodItemList(order.getFoodItemSet()
                                 .stream()
                                 .map(foodItem -> setFoodItem(foodItem,foodItemOrdersList))
@@ -193,6 +194,22 @@ public class OrderService {
     public String getElasticOrderId(Orders order) {
         //add customerId here
         return "restaurant_order_"+order.getOrderId();
+    }
+
+    public Object getOrder(UUID orderId) {
+        try {
+            Orders order = ordersRepository.findById(orderId).get();
+            List<FoodItemOrders> foodItemOrders = foodItemsOrdersRepository.findByOrderId(orderId);
+            OrderModel orderModel = new OrderModel();
+            orderModel.setSubUserId(order.getTable().getSubUser().getSubUserId());
+            orderModel.setTableId(order.getTable().getTableId());
+            orderModel.setOrderId(orderId);
+            orderModel.setFoodItemOrdersList(foodItemOrders);
+            return orderModel;
+        } catch (Exception e) {
+            log.error("Error occurred saving fetching order details for order id {}",orderId);
+            throw new RuntimeException("Error occurred while featcing order id",e);
+        }
     }
 }
 //https://stackoverflow.com/questions/39185977/failed-to-convert-request-element-in-entity-with-idclass

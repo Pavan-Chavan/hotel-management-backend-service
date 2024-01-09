@@ -1,5 +1,6 @@
 package com.teams.controller;
 
+import com.teams.entity.SubUser;
 import com.teams.entity.Table;
 import com.teams.entity.models.CategoryModel;
 import com.teams.exception.HotelManagementException;
@@ -12,6 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+import static com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table;
 
 
 @RestController
@@ -56,11 +61,13 @@ public class TableController {
         }
     }
 
-    @ApiOperation(value = "Update table")
+    @ApiOperation(value = "Update table and can be use to assing waiter")
     @PutMapping("/updateTable")
-    public ResponseEntity updateFoodItem(@RequestBody Table table) {
+    public ResponseEntity updateFoodItem(@RequestParam Long tableId,
+                                         @RequestParam String status,
+                                         @RequestParam UUID subUserId) {
         try {
-            return new ResponseEntity(tableService.updateTable(table),HttpStatus.OK);
+            return new ResponseEntity(tableService.updateTable(tableId,status,subUserId),HttpStatus.OK);
         } catch (Exception e) {
             throw new HotelManagementException(e.getMessage());
         }

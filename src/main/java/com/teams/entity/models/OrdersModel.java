@@ -11,5 +11,6 @@ public class OrdersModel {
     private UUID orderId;
 //    private String customerId;
     private String subUserId;
+    private Long tableId;
     private Map<Long,Integer> orderDetails;
 }

@@ -24,8 +24,8 @@ public class Orders {
     //private Customer customer;
 
     @OneToOne
-    @JoinColumn(name = "sub_user_id")
-    private SubUser subUser;
+    @JoinColumn(name = "table_id")
+    private com.teams.entity.Table table;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE},fetch = FetchType.EAGER)
     @JoinTable(
