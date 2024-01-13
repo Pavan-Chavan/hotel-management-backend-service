@@ -25,7 +25,7 @@ public class Orders {
 
     @OneToOne
     @JoinColumn(name = "table_id")
-    private com.teams.entity.Table table;
+    private DinningTable dinningTable;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE},fetch = FetchType.EAGER)
     @JoinTable(

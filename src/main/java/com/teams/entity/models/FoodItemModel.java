@@ -9,4 +9,5 @@ public class FoodItemModel {
     Double foodItemPrice;
     Long categoryId;
     Integer quantity;
+    String foodItemDescription;
 }

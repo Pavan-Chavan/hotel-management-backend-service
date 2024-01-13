@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 
 @RestController
-@RequestMapping("/1.0/orders")
+@RequestMapping("/1.0")
 @Api(value = "category Apis",description = "Rest APIs to perform orders related actions")
 public class OrdersController {
 
@@ -26,7 +26,7 @@ public class OrdersController {
     OrderService orderService;
 
     @ApiOperation(value = "Save orders",produces = "application/json")
-    @PostMapping("/saveOrders")
+    @PostMapping("/order")
     public ResponseEntity saveOrderDetails(@RequestBody OrdersModel ordersModel){
         try{
             return new ResponseEntity(orderService.saveOrderDetails(ordersModel), HttpStatus.OK);
@@ -36,7 +36,7 @@ public class OrdersController {
     }
 
     @ApiOperation(value = "Update orders",produces = "application/json")
-    @PostMapping("/updateOrders")
+    @PutMapping("/order")
     public ResponseEntity updateCategory(@RequestBody OrdersModel ordersModel){
         try{
             return new ResponseEntity(orderService.updateOrderDetails(ordersModel), HttpStatus.OK);
@@ -46,7 +46,7 @@ public class OrdersController {
     }
 
     @ApiOperation(value = "Get current order details by order id",produces = "application/json")
-    @GetMapping("/getOrder")
+    @GetMapping("/order")
     public ResponseEntity getOrder(@RequestParam(name = "orderId",required = false) UUID orderId){
         try{
             return new ResponseEntity(orderService.getOrder(orderId), HttpStatus.OK);

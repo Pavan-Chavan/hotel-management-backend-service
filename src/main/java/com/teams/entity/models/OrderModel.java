@@ -12,5 +12,12 @@ public class OrderModel {
     UUID subUserId;
     UUID orderId;
     Long tableId;
-    List<FoodItemOrders> foodItemOrdersList;
+    List<FoodItemsOrderModel> foodItemsOrderModelList;
+
+    @Setter
+    @Getter
+    public static class FoodItemsOrderModel{
+        Long foodItemId;
+        Integer quantity;
+    }
 }

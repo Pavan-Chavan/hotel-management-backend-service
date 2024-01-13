@@ -1,11 +1,9 @@
 package com.teams.controller;
 
-import com.teams.entity.SubUser;
-import com.teams.entity.Table;
-import com.teams.entity.models.CategoryModel;
+import com.teams.entity.DinningTable;
+import com.teams.entity.models.DinningTableModel;
 import com.teams.exception.HotelManagementException;
-import com.teams.service.CategoryService;
-import com.teams.service.TableService;
+import com.teams.service.DinningTableService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -16,34 +14,34 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-import static com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table;
+
 
 
 @RestController
-@RequestMapping("/1.0/table")
+@RequestMapping("/1.0")
 @Api(value = "table Apis",description = "Rest APIs to perform table related actions")
-public class TableController {
+public class DinningTableController {
     @Autowired
-    TableService tableService;
+    DinningTableService dinningTableService;
 
     @ApiOperation(value = "Save table",produces = "application/json")
-    @PostMapping("/saveTable")
-    public ResponseEntity saveTable(@RequestBody Table table){
+    @PostMapping("/table")
+    public ResponseEntity saveTable(@RequestBody DinningTableModel dinningTableModel){
         try{
-            return new ResponseEntity(tableService.saveTable(table),HttpStatus.OK);
+            return new ResponseEntity(dinningTableService.saveTable(dinningTableModel),HttpStatus.OK);
         }catch (Exception he){
             throw new HotelManagementException(he.getMessage());
         }
     }
 
     @ApiOperation(value = "Get table list",produces = "application/json")
-    @GetMapping("/getTables")
+    @GetMapping("/tables")
     public ResponseEntity getCategories(@RequestParam(name = "offset",defaultValue = "5") Integer offset,
                                    @RequestParam(name = "pageNo",defaultValue = "0") Integer pageNumber,
                                    @RequestParam(name = "order", defaultValue = "ASC") String order,
                                    @RequestParam(name = "tableId",required = false,defaultValue = "-1") Long tableId){
         try{
-            return new ResponseEntity(tableService.getTable(offset,pageNumber,order,tableId), HttpStatus.OK);
+            return new ResponseEntity(dinningTableService.getTable(offset,pageNumber,order,tableId), HttpStatus.OK);
         }catch (Exception he){
             throw new HotelManagementException(he.getMessage());
         }
@@ -52,22 +50,20 @@ public class TableController {
     @ApiOperation(value = "Delete table")
     @ApiImplicitParam(name = "tableId",dataType = "Long",required = true, paramType = "query",
             value = "tableId should be valid table ID")
-    @DeleteMapping("/deleteTableId")
+    @DeleteMapping("/table")
     public ResponseEntity<String> deleteRole(@RequestParam Long tableId){
         try{
-            return new ResponseEntity(tableService.deleteTable(tableId),HttpStatus.OK);
+            return new ResponseEntity(dinningTableService.deleteTable(tableId),HttpStatus.OK);
         }catch (Exception he){
             throw new HotelManagementException(he.getMessage());
         }
     }
 
     @ApiOperation(value = "Update table and can be use to assing waiter")
-    @PutMapping("/updateTable")
-    public ResponseEntity updateFoodItem(@RequestParam Long tableId,
-                                         @RequestParam String status,
-                                         @RequestParam UUID subUserId) {
+    @PutMapping("/table")
+    public ResponseEntity updateFoodItem(@RequestBody DinningTableModel dinningTableModel) {
         try {
-            return new ResponseEntity(tableService.updateTable(tableId,status,subUserId),HttpStatus.OK);
+            return new ResponseEntity(dinningTableService.updateTable(dinningTableModel),HttpStatus.OK);
         } catch (Exception e) {
             throw new HotelManagementException(e.getMessage());
         }

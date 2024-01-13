@@ -10,9 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.document.DocumentField;
 import org.elasticsearch.xcontent.XContentType;
-import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.teams.entity.models.OrdersModel.FoodStatus.IN_PROGRESS;
 
 @Service
 @Slf4j
@@ -52,14 +52,14 @@ public class OrderService {
         try{
             order.setOrderId(uuid);
             log.info("Added sub-user details to the order");
-            ordersModel.getOrderDetails().entrySet().stream().forEach(map ->{
-                FoodItem foodItem = foodItemRepository.findById(map.getKey()).get();
+            ordersModel.getFoodItemOrderModels().stream().forEach(foodItemOrderModel -> {
+                FoodItem foodItem = foodItemRepository.findById(foodItemOrderModel.getFoodItemId()).get();
                 order.getFoodItemSet().add(foodItem);
                 foodItem.getOrderSet().add(order);
             });
-            Table table = tableRepository.findById(ordersModel.getTableId()).get();
-            order.setTable(table);
 
+            DinningTable dinningTable = tableRepository.findById(ordersModel.getTableId()).get();
+            order.setDinningTable(dinningTable);
             ordersRepository.save(order);
             log.info("Updating all the quantity values into the table");
             List<FoodItemOrders> foodItemOrders = updateQuantityInFoodItemOrders(ordersModel, uuid);
@@ -86,19 +86,19 @@ public class OrderService {
 //                    orders.setSubUser(subUser);
 //                    log.info("Added sub-user details to the order with sub-userId {}",subUser.getSubUserId());
 //                }
-                if(!orders.getFoodItemSet().isEmpty()){
-                    Set<FoodItem> foodItemSet = orders.getFoodItemSet();
-                    ordersModel.getOrderDetails().entrySet().stream().forEach(map ->{
-                        FoodItem foodItem = foodItemRepository.findById(map.getKey()).get();
-                        Optional<FoodItem> savedFoodItem = foodItemSet.stream()
-                                .filter(foodItem1 -> foodItem1.getFoodItemId() == foodItem.getFoodItemId())
-                                .findFirst();
-                        if(!savedFoodItem.isPresent()){
-                            orders.getFoodItemSet().add(foodItem);
-                            foodItem.getOrderSet().add(orders);
-                        }
-                    });
-                }
+//                if(!orders.getFoodItemSet().isEmpty()){
+//                    Set<FoodItem> foodItemSet = orders.getFoodItemSet();
+//                    ordersModel.getOrderDetails().entrySet().stream().forEach(map ->{
+//                        FoodItem foodItem = foodItemRepository.findById(map.getKey()).get();
+//                        Optional<FoodItem> savedFoodItem = foodItemSet.stream()
+//                                .filter(foodItem1 -> foodItem1.getFoodItemId() == foodItem.getFoodItemId())
+//                                .findFirst();
+//                        if(!savedFoodItem.isPresent()){
+//                            orders.getFoodItemSet().add(foodItem);
+//                            foodItem.getOrderSet().add(orders);
+//                        }
+//                    });
+//                }
                 ordersRepository.save(orders);
                 log.info("Updating all the quantity values into the table");
                 List<FoodItemOrders> foodItemOrders = updateQuantityInFoodItemOrders(ordersModel, ordersModel.getOrderId());
@@ -173,12 +173,15 @@ public class OrderService {
     }
 
     private List<FoodItemOrders> updateQuantityInFoodItemOrders(OrdersModel ordersModel, UUID uuid) {
-        List<FoodItemOrders> foodItemOrdersList = ordersModel.getOrderDetails().entrySet().stream().map(map -> {
+        List<FoodItemOrders> foodItemOrdersList = ordersModel.getFoodItemOrderModels().stream().map(foodItemOrderModel -> {
             FoodItemsOrderPrimaryKey foodItemsOrderPrimaryKey = new FoodItemsOrderPrimaryKey();
             foodItemsOrderPrimaryKey.setOrderId(uuid);
-            foodItemsOrderPrimaryKey.setFoodItemId(map.getKey());
+            foodItemsOrderPrimaryKey.setFoodItemId(foodItemOrderModel.getFoodItemId());
             FoodItemOrders foodItemOrders = foodItemsOrdersRepository.findById(foodItemsOrderPrimaryKey).get();
-            foodItemOrders.setQuantity(map.getValue());
+            SubUser subUser = managementUserRepository.findById(foodItemOrderModel.getCookId()).get();
+            foodItemOrders.setSubUser(subUser);
+            foodItemOrders.setQuantity(foodItemOrderModel.getQuantity());
+            foodItemOrders.setStatus(IN_PROGRESS.toString());
             return foodItemsOrdersRepository.save(foodItemOrders);
         }).collect(Collectors.toList());
         return foodItemOrdersList;
@@ -201,10 +204,17 @@ public class OrderService {
             Orders order = ordersRepository.findById(orderId).get();
             List<FoodItemOrders> foodItemOrders = foodItemsOrdersRepository.findByOrderId(orderId);
             OrderModel orderModel = new OrderModel();
-            orderModel.setSubUserId(order.getTable().getSubUser().getSubUserId());
-            orderModel.setTableId(order.getTable().getTableId());
+            orderModel.setSubUserId(order.getDinningTable().getSubUser().getSubUserId());
+            orderModel.setTableId(order.getDinningTable().getTableId());
             orderModel.setOrderId(orderId);
-            orderModel.setFoodItemOrdersList(foodItemOrders);
+            List<OrderModel.FoodItemsOrderModel> foodItemsOrderModelList = foodItemOrders.stream()
+                    .map(foodItemOrders1 -> {
+                        OrderModel.FoodItemsOrderModel foodItemsOrderModel = new OrderModel.FoodItemsOrderModel();
+                        foodItemsOrderModel.setFoodItemId(foodItemOrders1.getFoodItemId());
+                        foodItemsOrderModel.setQuantity(foodItemOrders1.getQuantity());
+                        return foodItemsOrderModel;
+                    }).collect(Collectors.toList());
+            orderModel.setFoodItemsOrderModelList(foodItemsOrderModelList);
             return orderModel;
         } catch (Exception e) {
             log.error("Error occurred saving fetching order details for order id {}",orderId);

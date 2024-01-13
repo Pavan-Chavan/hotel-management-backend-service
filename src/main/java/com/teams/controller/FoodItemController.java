@@ -19,15 +19,15 @@ import javax.annotation.security.RolesAllowed;
 
 
 @RestController
-@RequestMapping("/1.0/foodItem")
+@RequestMapping("/1.0/")
 @Api(value = "Food Item Apis",description = "Rest APIs to perform food item related actions")
 public class FoodItemController {
     @Autowired
     FoodItemService foodItemService;
 
     @ApiOperation(value = "Save food item",produces = "application/json")
-    @PostMapping("/saveFoodItem")
-    public ResponseEntity saveRole(@RequestBody FoodItemModel foodItemModel){
+    @PostMapping("/foodItem")
+    public ResponseEntity saveFoodItem(@RequestBody FoodItemModel foodItemModel){
         try{
             return new ResponseEntity(foodItemService.saveFoodItem(foodItemModel),HttpStatus.OK);
         }catch (Exception he){
@@ -36,7 +36,7 @@ public class FoodItemController {
     }
 
     @ApiOperation(value = "Get food item list",produces = "application/json")
-    @GetMapping("/getFoodItems")
+    @GetMapping("/foodItems")
     public ResponseEntity getFoodItems(@RequestParam(name = "offset",defaultValue = "5") Integer offset,
                                    @RequestParam(name = "pageNo",defaultValue = "0") Integer pageNumber,
                                    @RequestParam(name = "order", defaultValue = "ASC") String order,
@@ -51,7 +51,7 @@ public class FoodItemController {
     @ApiOperation(value = "Delete food item from list")
     @ApiImplicitParam(name = "foodItemId",dataType = "Long",required = true, paramType = "query",
             value = "foodItemId should be valid food item id")
-    @DeleteMapping("/deleteFoodItemId")
+    @DeleteMapping("/foodItem")
     public ResponseEntity<String> deleteRole(@RequestParam Long foodItemId){
         try{
             return new ResponseEntity(foodItemService.deleteFoodItem(foodItemId),HttpStatus.OK);
@@ -60,8 +60,8 @@ public class FoodItemController {
         }
     }
 
-    @ApiOperation(value = "Upate food item")
-    @PutMapping("/updateFoodItem")
+    @ApiOperation(value = "Update food item")
+    @PutMapping("/foodItem")
     public ResponseEntity updateFoodItem(@RequestBody FoodItemModel foodItemModel) {
         try {
             return new ResponseEntity(foodItemService.updateFoodItem(foodItemModel),HttpStatus.OK);

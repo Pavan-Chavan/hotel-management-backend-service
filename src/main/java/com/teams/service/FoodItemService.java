@@ -50,11 +50,11 @@ public class FoodItemService {
             foodItem.setCategory(categoryRepository.findById(foodItemModel.getCategoryId()).get());
             foodItem.setName(foodItemModel.getFoodItemName());
             foodItem.setPrice(foodItemModel.getFoodItemPrice());
-
+            foodItem.setFoodItemDescription(foodItem.getFoodItemDescription());
             foodItem.setCreatedAt(new Date());
             log.info("Saving food item");
             foodItemRepository.save(foodItem);
-            return new ResponseMessage("Item Saved Succefully");
+            return new ResponseMessage("Item Saved Successfully");
         } catch (Exception e) {
             throw new HotelManagementException(e.getMessage());
         }
@@ -66,7 +66,7 @@ public class FoodItemService {
             Optional<FoodItem> foodItem = foodItemRepository.findById(foodItemId);
             if(foodItem.isPresent()) {
                 foodItemRepository.deleteById(foodItemId);
-                return new ResponseMessage("Food Item " + foodItem.get().getName() + " delete succefully");
+                return new ResponseMessage("Food Item " + foodItem.get().getName() + " delete Successfully");
             } else {
                 return new ResponseMessage("Unable to delete");
             }
