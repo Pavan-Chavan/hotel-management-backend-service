@@ -19,7 +19,7 @@ public class Login {
     @Column(name = "username")
     private String username;
     @JsonIgnore
-    @Column(name = "pass_word")
+    @Column(name = "password")
     private String password;
 
 }

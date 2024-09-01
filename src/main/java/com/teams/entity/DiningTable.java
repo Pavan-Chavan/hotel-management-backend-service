@@ -2,13 +2,11 @@ package com.teams.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author pachavan
@@ -16,8 +14,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@javax.persistence.Table(name = "dinning_table")
-public class Table {
+@Table(name = "dinning_table")
+public class DiningTable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long tableId;

@@ -26,16 +26,13 @@ public class ManagementUserController {
     @ApiOperation(value = "Save user",produces = "application/json")
     @PostMapping("/createUser")
     public ResponseEntity createUser(@RequestBody SubUserRequestModel subUserRequestModel){
-        return managementUserService.createUser(subUserRequestModel);
+        return new ResponseEntity(managementUserService.createUser(subUserRequestModel),HttpStatus.OK);
     }
 
     @PutMapping("/updateUser")
     public ResponseEntity updateUser(@RequestBody SubUserRequestModel subUserRequestModel){
-        try{
-            return new ResponseEntity(managementUserService.updateUser(subUserRequestModel), HttpStatus.OK);
-        } catch (Exception e){
-            throw new HotelManagementException("Error occurred while updating the sub-user");
-        }
+
+        return new ResponseEntity(managementUserService.updateUser(subUserRequestModel), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get user list",produces = "application/json")

@@ -9,4 +9,11 @@ public class HoteManagementConstants {
     public static final String TOTAL_RECORD= "total_records";
     public static final String ENABLE= "enable";
     public static final String DISABLE= "disable";
+    public static final String CREATED_AT= "createdAt";
+    public static final String ASC= "ASC";
+
+
+    public enum Status {
+        ENABLE,DISABLE
+    }
 }

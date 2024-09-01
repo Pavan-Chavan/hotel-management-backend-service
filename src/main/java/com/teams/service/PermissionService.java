@@ -1,6 +1,7 @@
 package com.teams.service;
 
-import com.teams.entity.Role;
+import com.teams.entity.models.HotelManagementListResponse;
+import com.teams.exception.HotelManagementDataNotFoundException;
 import com.teams.exception.HotelManagementException;
 import com.teams.entity.Permission;
 import com.teams.repository.PermissionRepository;
@@ -10,16 +11,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Optional;
 
-import static com.teams.constant.HoteManagementConstants.DISABLE;
-import static com.teams.constant.HoteManagementConstants.TOTAL_RECORD;
+import static com.teams.constant.HoteManagementConstants.*;
 
 /**
  * @author dgardi
@@ -28,91 +26,120 @@ import static com.teams.constant.HoteManagementConstants.TOTAL_RECORD;
 @Slf4j
 public class PermissionService {
 
-    Permission permission;
+
     @Autowired
     PermissionRepository permissionRepository;
 
-    /**
-     *
-     * @param permissionName
-     * @param isDisable
-     * @return
-     */
-    public ResponseEntity savePermission(Permission permissionDto) {
+
+    public Permission savePermission(Permission permissionDto) {
         String permissionName =  permissionDto.getPermissionName();
         Long permissionId = permissionDto.getPermissionId();
         Boolean isDisable = permissionDto.getIsDisable();
-        Permission permission = null;
+        Permission permission = new Permission();
         try{
-            if(permissionId != null) {
-                Optional<Permission> existingPermission = permissionRepository.findById(permissionId);
+            validatePermissionId(permissionId);
+            log.info("Fetching permission details for permissionId {}",permissionId);
+            Optional<Permission> existingPermission = permissionRepository.findById(permissionId);
 
-                if(existingPermission.isPresent()){
-                    permission = existingPermission.get();
-                    permission.setIsDisable(isDisable);
-                    permission.setPermissionName(permissionName);
-                }
+            if(existingPermission.isPresent()) {
+                log.info("Data found for permissionId {} in the database",permissionId);
+                permission = existingPermission.get();
             }
-            else {
-                permission = new Permission();
-                permission.setPermissionName(permissionName);
-                permission.setIsDisable(isDisable);
-            }
-            permission = permissionRepository.save(permission);
-            log.info("Data saved successfully for permissionName {}",permissionName);
-        }catch(Exception e){
+            permission.setIsDisable(isDisable);
+            permission.setPermissionName(permissionName);
+            permission.setCreatedAt(new Date());
+            log.info("Saving Permission details for permissionName {}",permissionName);
+            return permissionRepository.save(permission);
+
+        } catch (IllegalArgumentException iae) {
+            log.error("Invalid data provided either permissionId is null or invalid ",iae);
+            throw iae;
+        } catch(Exception e){
             log.error("Error occurred while saving data ",e);
-            throw new HotelManagementException(e.getMessage());
+            throw new HotelManagementException("Error occurred while saving permissions data");
         }
-        return new ResponseEntity(permission,HttpStatus.OK);  // TODO : update response with statdard respose dto
     }
 
-    public ResponseEntity getPermissions(Integer offset,Integer pageNumber,String order,Long permissionId) {
+    public HotelManagementListResponse getPermissions(Integer offset, Integer pageNumber, String order, Long permissionId) {
         try{
-            HttpHeaders headers = new HttpHeaders();
-
+            Optional<Permission> permissionOptional = null;
             if(permissionId != -1){
                 log.info("Retrieving the permission for permissionId: {}",permissionId);
-                Permission permission = permissionRepository.findById(permissionId).get();
-                return new ResponseEntity(permission,HttpStatus.OK);
+                permissionOptional = permissionRepository.findById(permissionId);
             }
-            log.info("Retrieving the permission list..");
-            Sort sort = order.equals("ASC")?Sort.by("createdAt").ascending():Sort.by("createdAt").descending();
-            Pageable paging = PageRequest.of(pageNumber,offset, sort);
-            Page<Permission> totalRecords = permissionRepository.findAll(paging);
-            headers.add(TOTAL_RECORD,String.valueOf(totalRecords.getTotalElements()));
-            return new ResponseEntity(totalRecords.getContent(), headers, HttpStatus.OK);
-        }catch(Exception e){
-            log.error("Error occurred while retrieving permission data",e);
-            throw new HotelManagementException(e.getMessage());
+
+            if(permissionOptional != null && permissionOptional.isPresent()) {
+                return HotelManagementListResponse.getResponse(permissionOptional.get(),pageNumber,pageNumber);
+            } else {
+                log.info("Retrieving the permission list..");
+                Sort sort = order.equals(ASC)?Sort.by(CREATED_AT).ascending():Sort.by(CREATED_AT).descending();
+                Pageable paging = PageRequest.of(pageNumber,offset, sort);
+                Page<Permission> totalRecords = permissionRepository.findAll(paging);
+                return HotelManagementListResponse.getResponse(totalRecords,pageNumber,offset);
+            }
+
+        } catch(Exception e){
+            log.error("Error occurred while retrieving permission data ",e);
+            throw new HotelManagementException("Error occurred while retrieving the data for permissions",e);
         }
     }
 
-    /**
-     *
-     * @param permissionId
-     */
+
+
+
     @Transactional
     public void deletePermission(Long permissionId) {
         try{
-            log.info("Deleting the role having permissionName {}",permissionId);
-            permissionRepository.deleteById(permissionId);
-        }catch(Exception e){
-            log.error("Error occurred while deleting permission ",e);
-            throw new HotelManagementException(e.getMessage());
+            validatePermissionId(permissionId);
+            Optional<Permission> optionalPermission = permissionRepository.findById(permissionId);
+            if(optionalPermission.isPresent()) {
+                log.info("Deleting the permission having permissionId {}",permissionId);
+                permissionRepository.deleteById(permissionId);
+            } else {
+                throw new HotelManagementDataNotFoundException("Data Not Found");
+            }
+
+        } catch (IllegalArgumentException iae) {
+            log.error("Invalid data provided either permissionId is null or invalid ",iae);
+            throw iae;
+        } catch (HotelManagementDataNotFoundException dnfe) {
+            log.error("Data not found for permissionId {} in db",permissionId);
+            throw dnfe;
+        } catch(Exception e){
+            log.error("Error occurred while deleting permission details for permissionId {} ",permissionId,e);
+            throw new HotelManagementException("Error occurred while deleting the permissionId: "+permissionId,e);
         }
     }
 
-    public ResponseEntity<String> updateRoleStatus(Long permissionId, String status) {
+    public Permission updatePermissionStatus(Long permissionId, Status status) {
         try {
-            boolean value = status.equals(DISABLE) ? true : false ;
-            Permission permission = permissionRepository.findById(permissionId).get();
-            permission.setIsDisable(value);
-            permissionRepository.save(permission);
-            return new ResponseEntity<>("permission update successfully",HttpStatus.OK);
-        } catch (Exception e) {
-            log.error("Error occurred while updating role {} ",status,e);
-            throw new HotelManagementException(e.getMessage());
+            validatePermissionId(permissionId);
+            Optional<Permission> optionalPermission = permissionRepository.findById(permissionId);
+            if(optionalPermission.isPresent()) {
+                boolean value = status.toString().equalsIgnoreCase(DISABLE);
+                log.info("Updating the permission details for permissionId {} ",permissionId);
+                Permission permission = optionalPermission.get();
+                permission.setIsDisable(value);
+                return permissionRepository.save(permission);
+            } else {
+                throw new HotelManagementDataNotFoundException("Data Not Found");
+            }
+
+        } catch (IllegalArgumentException iae) {
+            log.error("Invalid data provided either permissionId is null or invalid ",iae);
+            throw iae;
+        } catch (HotelManagementDataNotFoundException dnfe) {
+            log.error("Data not found for permissionId {} in db",permissionId);
+            throw dnfe;
+        } catch(Exception e){
+            log.error("Error occurred while updating permission details for permissionId {} ",permissionId,e);
+            throw new HotelManagementException("Error occurred while updating the permissionId: "+permissionId,e);
+        }
+    }
+
+    public void validatePermissionId (Long permissionId){
+        if(permissionId == null || permissionId < 0) {
+            throw new IllegalArgumentException("Invalid Data provided");
         }
     }
 }

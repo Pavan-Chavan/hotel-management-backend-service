@@ -13,7 +13,7 @@
                         maxValue="9999999999999" ordered="false" startValue="1"/>
     </changeSet>
 
-    <!--Change Set to create table roles -->
+    <!--Change Set to create diningTable roles -->
     <changeSet id="dhiraj-101" author="dhiraj">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -32,7 +32,7 @@
             </column>
         </createTable>
     </changeSet>
-    <!--Change Set to add few dummy records into table -->
+    <!--Change Set to add few dummy records into diningTable -->
     <changeSet id="dhiraj-103" author="dhiraj">
         <sqlFile path="db/procedure/roles-procedure.sql"
                  endDelimiter=";"
@@ -42,7 +42,7 @@
                  encoding="UTF-8"/>
     </changeSet>
 
-    <!--Change Set to create table permissions -->
+    <!--Change Set to create diningTable permissions -->
     <changeSet id="dhiraj-104" author="dhiraj">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -55,7 +55,7 @@
             </column>
         </createTable>
     </changeSet>
-    <!--Change Set to add few dummy records into table permission -->
+    <!--Change Set to add few dummy records into diningTable permission -->
     <changeSet id="dhiraj-106" author="dhiraj">
         <sqlFile path="db/procedure/permissions-procedure.sql"
                  endDelimiter=";"
@@ -64,7 +64,7 @@
                  dbms="oracle"
                  encoding="UTF-8"/>
     </changeSet>
-    <!--Change Set to create table login_credentials -->
+    <!--Change Set to create diningTable login_credentials -->
     <changeSet id="dhiraj-107" author="dhiraj">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -81,7 +81,7 @@
         </createTable>
     </changeSet>
 
-    <!--Change Set to create table management_users -->
+    <!--Change Set to create diningTable management_users -->
     <changeSet id="dhiraj-109" author="dhiraj">
         <preConditions onFail="MARK_RAN">
             <not>

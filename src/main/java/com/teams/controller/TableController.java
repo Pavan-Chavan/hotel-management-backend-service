@@ -1,9 +1,7 @@
 package com.teams.controller;
 
-import com.teams.entity.Table;
-import com.teams.entity.models.CategoryModel;
+import com.teams.entity.DiningTable;
 import com.teams.exception.HotelManagementException;
-import com.teams.service.CategoryService;
 import com.teams.service.TableService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -21,11 +19,11 @@ public class TableController {
     @Autowired
     TableService tableService;
 
-    @ApiOperation(value = "Save table",produces = "application/json")
+    @ApiOperation(value = "Save diningTable",produces = "application/json")
     @PostMapping("/saveTable")
-    public ResponseEntity saveTable(@RequestBody Table table){
+    public ResponseEntity saveTable(@RequestBody DiningTable diningTable){
         try{
-            return new ResponseEntity(tableService.saveTable(table),HttpStatus.OK);
+            return new ResponseEntity(tableService.saveTable(diningTable),HttpStatus.OK);
         }catch (Exception he){
             throw new HotelManagementException(he.getMessage());
         }
@@ -56,11 +54,11 @@ public class TableController {
         }
     }
 
-    @ApiOperation(value = "Update table")
+    @ApiOperation(value = "Update diningTable")
     @PutMapping("/updateTable")
-    public ResponseEntity updateFoodItem(@RequestBody Table table) {
+    public ResponseEntity updateFoodItem(@RequestBody DiningTable diningTable) {
         try {
-            return new ResponseEntity(tableService.updateTable(table),HttpStatus.OK);
+            return new ResponseEntity(tableService.updateTable(diningTable),HttpStatus.OK);
         } catch (Exception e) {
             throw new HotelManagementException(e.getMessage());
         }

@@ -30,7 +30,7 @@ public class Orders {
 
     @OneToOne
     @JoinColumn(name = "table_id")
-    private Table table;
+    private DiningTable diningTable;
 
     @OneToOne
     @JoinColumn(name = "sub_user_id")
