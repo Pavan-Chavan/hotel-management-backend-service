@@ -1,12 +1,9 @@
 package com.teams.controller;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.teams.entity.Login;
-import com.teams.payload.LoginRequest;
+import com.teams.entity.models.LoginRequest;
 import com.teams.repository.LoginRepository;
 import com.teams.security.jwt.JwtResponse;
 import com.teams.security.jwt.JwtUtils;

@@ -1,4 +1,4 @@
-package com.teams.payload;
+package com.teams.entity.models;
 
 import lombok.Data;
 
