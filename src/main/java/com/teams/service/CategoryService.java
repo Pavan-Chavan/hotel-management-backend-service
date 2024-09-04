@@ -51,7 +51,7 @@ public class CategoryService {
 
             log.info("Saving category...");
             categoryRepository.save(category);
-            return new ResponseMessage("Item Saved Succefully");
+            return new ResponseMessage("Item Saved Successfully");
         } catch (Exception e) {
             throw new HotelManagementException(e.getMessage());
         }

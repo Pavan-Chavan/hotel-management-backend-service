@@ -144,6 +144,11 @@
 			<scope>provided</scope> <!-- Use 'provided' if the servlet container provides it -->
 		</dependency>
 
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>32.1.2-jre</version> <!-- You can use the latest version -->
+		</dependency>
 <!--		spring secutiry dependancy ends-->
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
