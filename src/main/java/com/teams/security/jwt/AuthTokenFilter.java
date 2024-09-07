@@ -1,6 +1,8 @@
 package com.teams.security.jwt;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import com.teams.service.LoginService;
 
@@ -16,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 public class AuthTokenFilter extends OncePerRequestFilter {
@@ -32,6 +35,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             throws IOException, ServletException {
         try {
             String jwt = parseJwt(request);
+            if (jwtUtils.isAllowedUrl(request)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
 
@@ -44,12 +52,16 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                filterChain.doFilter(request, response);
+                return;
             }
-        } catch (Exception e) {
-            logger.error("Cannot set user authentication: {}", e);
-        }
 
-        filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write(e.getMessage());
+            return;
+        }
+        return;
     }
 
     private String parseJwt(HttpServletRequest request) {

@@ -18,7 +18,9 @@
 		<swagger.version>3.0.0</swagger.version>
 		<ojdbc.version>19.18.0.0</ojdbc.version>
 	</properties>
+
 	<dependencies>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -102,6 +104,12 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${swagger.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>32.1.2-jre</version> <!-- Use the latest version available -->
+		</dependency>
+
 		<!-- liquibase related dependency-->
 		<dependency>
 			<groupId>org.liquibase</groupId>

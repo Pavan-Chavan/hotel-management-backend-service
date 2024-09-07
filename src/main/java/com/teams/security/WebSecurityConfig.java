@@ -14,7 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
+// https://www.bezkoder.com/spring-boot-jwt-authentication/
 @Configuration
 @EnableMethodSecurity
 public class WebSecurityConfig {
@@ -54,7 +54,6 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/swagger-ui/").permitAll()
                 .antMatchers("/swagger-ui/**").permitAll()
-                .antMatchers("/1.0/**").permitAll()
                 .antMatchers("/swagger-resources").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
                 .antMatchers("/v2/api-docs/**").permitAll()
