@@ -106,7 +106,7 @@ public class RoleService {
             if(optionalRole.isPresent()) {
                 //TODO insert the default role details through liquibase script
                 List<SubUser> subUserList = managementUserRepository.findByRoleRoleId(roleId);
-                if(Objects.nonNull(subUserList)) {
+                if(Objects.isNull(subUserList)) {
                     Role defaultRole = roleRepository.findById(1L).get();
                     log.info("Updating the default role to subUsers list which has roleId {}",roleId);
                     List<SubUser> modifiedSubUserList = subUserList.stream().peek(subUser -> {

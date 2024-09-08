@@ -22,7 +22,6 @@ public class Role {
     @Column(name = "role_name")
     private String roleName;
 
-    @JsonIgnore
     @Column(name = "createdAt")
     private Date createdAt;
 

@@ -1,6 +1,7 @@
 package com.teams.controller;
 
 import com.teams.constant.HoteManagementConstants;
+import com.teams.constant.Response;
 import com.teams.exception.HotelManagementException;
 import com.teams.entity.Role;
 import com.teams.service.RoleService;
@@ -27,7 +28,6 @@ public class RoleController {
     @ApiOperation(value = "Save role",produces = "application/json")
     @PostMapping("/saveRole")
     public ResponseEntity saveRoleDetails(@RequestBody Role role){
-
         return new ResponseEntity(roleService.saveRole(role), HttpStatus.OK);
     }
 
