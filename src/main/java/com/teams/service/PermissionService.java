@@ -33,24 +33,28 @@ public class PermissionService {
 
     public Permission savePermission(Permission permissionDto) {
         String permissionName =  permissionDto.getPermissionName();
-        Long permissionId = permissionDto.getPermissionId();
         Boolean isDisable = permissionDto.getIsDisable();
         Permission permission = new Permission();
         try{
-            validatePermissionId(permissionId);
-            log.info("Fetching permission details for permissionId {}",permissionId);
-            Optional<Permission> existingPermission = permissionRepository.findById(permissionId);
+            if(permissionDto.getPermissionId() != null) {
+                Long permissionId = permissionDto.getPermissionId();
+                validatePermissionId(permissionId);
+                log.info("Fetching permission details for permissionId {}",permissionId);
+                Optional<Permission> existingPermission = permissionRepository.findById(permissionId);
 
-            if(existingPermission.isPresent()) {
-                log.info("Data found for permissionId {} in the database",permissionId);
-                permission = existingPermission.get();
+                if(existingPermission.isPresent()) {
+                    log.info("Data found for permissionId {} in the database",permissionId);
+                    permission = existingPermission.get();
+                }
+                permission.setIsDisable(isDisable);
+                permission.setPermissionName(permissionName);
+                permission.setCreatedAt(new Date());
+                log.info("Saving Permission details for permissionName {}",permissionName);
+                return permissionRepository.save(permission);
+            } else {
+                permissionDto.setCreatedAt(new Date());
+                return permissionRepository.save(permissionDto);
             }
-            permission.setIsDisable(isDisable);
-            permission.setPermissionName(permissionName);
-            permission.setCreatedAt(new Date());
-            log.info("Saving Permission details for permissionName {}",permissionName);
-            return permissionRepository.save(permission);
-
         } catch (IllegalArgumentException iae) {
             log.error("Invalid data provided either permissionId is null or invalid ",iae);
             throw iae;

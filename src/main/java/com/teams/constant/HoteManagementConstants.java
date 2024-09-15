@@ -14,6 +14,6 @@ public class HoteManagementConstants {
 
 
     public enum Status {
-        ENABLE,DISABLE
+        enable,disable
     }
 }

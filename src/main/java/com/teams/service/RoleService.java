@@ -46,21 +46,25 @@ public class RoleService {
         Boolean isDisable = role.getIsDisable();
         Role existingRole = new Role();
         try{
-            validateRoleId(roleId);
-            log.info("Fetching role details for roleId {}",roleId);
-            Optional<Role> roleOptional = roleRepository.findById(roleId);
+            if(role.getRoleId() != null) {
+                validateRoleId(roleId);
+                log.info("Fetching role details for roleId {}",roleId);
+                Optional<Role> roleOptional = roleRepository.findById(roleId);
 
-            if(roleOptional.isPresent()) {
-                log.info("Data found for roleId {} in the database",roleId);
-                existingRole = roleOptional.get();
+                if(roleOptional.isPresent()) {
+                    log.info("Data found for roleId {} in the database",roleId);
+                    existingRole = roleOptional.get();
+                }
+                existingRole.setIsDisable(isDisable);
+                existingRole.setRoleName(roleName);
+                existingRole.setCreatedAt(new Date());
+
+                log.info("Saving role details for roleName {}",roleName);
+                return roleRepository.save(existingRole);
+            } else {
+                role.setCreatedAt(new Date());
+                return roleRepository.save(role);
             }
-            existingRole.setIsDisable(isDisable);
-            existingRole.setRoleName(roleName);
-            existingRole.setCreatedAt(new Date());
-
-            log.info("Saving role details for roleName {}",roleName);
-            return roleRepository.save(existingRole);
-
         } catch (IllegalArgumentException iae) {
             log.error("Invalid data provided either roleId is null or invalid ",iae);
             throw iae;

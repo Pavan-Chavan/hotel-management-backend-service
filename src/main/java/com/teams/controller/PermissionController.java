@@ -23,7 +23,7 @@ public class PermissionController {
     PermissionService permissionService;
 
     @ApiOperation(value = "Save permission details",produces = "application/json")
-    @PostMapping("/save-permission")
+    @PostMapping("/savePermission")
     public ResponseEntity savePermissionDetails(@RequestBody Permission permission){
 
         return new ResponseEntity(permissionService.savePermission(permission), HttpStatus.OK);

@@ -30,7 +30,6 @@ public class Permission {
     @Column(name = "is_disable")
     private Boolean isDisable;
 
-    @JsonIgnore
     @Column(name = "createdAt")
     private Date createdAt;
 
