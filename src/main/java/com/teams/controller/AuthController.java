@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.teams.constant.Response;
 import com.teams.entity.Login;
 import com.teams.payload.LoginRequest;
 import com.teams.repository.LoginRepository;
@@ -13,8 +14,10 @@ import com.teams.security.jwt.JwtUtils;
 import com.teams.security.services.UserDetailsImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -61,7 +64,10 @@ public class AuthController {
                     userDetails.getUsername(),
                     userDetails.getPassword(),
                     roles));
-        } catch (Exception e) {
+        }catch (BadCredentialsException b) {
+            return new ResponseEntity<>("Password or Username is incorrect", HttpStatus.UNAUTHORIZED);
+        }
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
