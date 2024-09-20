@@ -63,6 +63,7 @@ public class ManagementUserService {
             subUser.setSubUserId(subUserId);
             subUser.setIsDisable(subUserRequestModel.getIsDisable());
 
+            // setting role data
             Optional<Role> roleOptional = roleRepository.findById(subUserRequestModel.getRoleId());
             if(roleOptional.isPresent()){
                 log.info("SubUserId {} is creating with roleName {}",subUserId,roleOptional.get().getRoleName());
@@ -71,6 +72,7 @@ public class ManagementUserService {
                 //TODO assign one default role to subUser
             }
 
+            // setting data in user data
             log.info("Creating login details for subUserId {}",subUserId);
             login.setUsername(subUserRequestModel.getUsername());
             String encodedPassword = encoder.encode(StringUtils.isEmpty(subUserRequestModel.getPassword())?DEFAULT_PASSWORD:subUserRequestModel.getPassword());
@@ -109,7 +111,7 @@ public class ManagementUserService {
 
     private void validateSubUserRequestModelData(SubUserRequestModel subUserRequestModel) {
 
-        if(StringUtils.isEmpty(subUserRequestModel.getUsername())) {
+        if(StringUtils.isEmpty(subUserRequestModel.getUsername()) || StringUtils.isEmpty(subUserRequestModel.getPassword())) {
             throw new IllegalArgumentException("Invalid data provided");
         }
     }

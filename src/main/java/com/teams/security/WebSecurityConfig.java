@@ -51,15 +51,15 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/swagger-ui/").permitAll()
-                .antMatchers("/swagger-ui/**").permitAll()
-                .antMatchers("/swagger-resources").permitAll()
-                .antMatchers("/swagger-resources/**").permitAll()
-                .antMatchers("/v2/api-docs/**").permitAll()
-                .antMatchers("/swagger-ui.html/**").permitAll()
-                .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated()
-                .and().build();
+//                .authorizeRequests()
+//                .antMatchers("/swagger-ui/").permitAll()
+//                .antMatchers("/swagger-ui/**").permitAll()
+//                .antMatchers("/swagger-resources").permitAll()
+//                .antMatchers("/swagger-resources/**").permitAll()
+//                .antMatchers("/v2/api-docs/**").permitAll()
+//                .antMatchers("/swagger-ui.html/**").permitAll()
+//                .antMatchers("/api/auth/**").permitAll()
+//                .anyRequest().authenticated()
+                .build();
     }
 }

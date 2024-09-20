@@ -34,27 +34,28 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response, javax.servlet.FilterChain filterChain)
             throws IOException, ServletException {
         try {
-            String jwt = parseJwt(request);
-            if (jwtUtils.isAllowedUrl(request)) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUserNameFromJwtToken(jwt);
-
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                filterChain.doFilter(request, response);
-                return;
-            }
+//            String jwt = parseJwt(request);
+//            if (jwtUtils.isAllowedUrl(request)) {
+//                filterChain.doFilter(request, response);
+//                return;
+//            }
+//
+//            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+//                String username = jwtUtils.getUserNameFromJwtToken(jwt);
+//
+//                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+//                UsernamePasswordAuthenticationToken authentication =
+//                        new UsernamePasswordAuthenticationToken(
+//                                userDetails,
+//                                null,
+//                                userDetails.getAuthorities());
+//                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//
+//                SecurityContextHolder.getContext().setAuthentication(authentication);
+//                filterChain.doFilter(request, response);
+//                return;
+//            }
+            filterChain.doFilter(request, response);
 
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
